@@ -287,18 +287,23 @@
 	    const el = this.el;
 	    this.target = document.querySelector(el);
 
-	    this._createDom();
+	    this._createHelperLayer();
+
+	    this._createToolTip();
 
 	    buttonAddEventListener(this);
 	  }
 
 	  destory() {
 	    buttonRemoveEventListener(this);
+
+	    this._removeToolTip();
+
+	    this._removeHelperLayer();
 	  }
 
-	  _createDom() {
-	    if (!this.guide) return;
-	    const body = document.getElementsByTagName('body')[0]; // 辅助层
+	  _getDomStyle(type) {
+	    this.body = document.getElementsByTagName("body")[0]; // 辅助层
 
 	    const currentStep = this.guide.currentStep;
 	    const {
@@ -310,32 +315,55 @@
 	    const offsetTop = Number(currentStep.offsetTop);
 	    const offsetLeft = Number(currentStep.offsetLeft);
 	    const helperLayerStryle = {
-	      width: width + 'px',
-	      height: height + 'px',
-	      top: top + 'px',
-	      left: left + 'px'
+	      width: width + "px",
+	      height: height + "px",
+	      top: top + "px",
+	      left: left + "px"
 	    };
+	    const toolTipStyle = {
+	      width: currentStep.width + "px",
+	      height: currentStep.height + "px",
+	      top: height + top + offsetTop + "px",
+	      left: left + offsetLeft + "px"
+	    };
+
+	    switch (type) {
+	      case "helperLayerStryle":
+	        return helperLayerStryle;
+
+	      case "toolTipStyle":
+	        return toolTipStyle;
+	    }
+	  }
+
+	  _createHelperLayer() {
+	    const helperLayerStryle = this._getDomStyle("helperLayerStryle");
 
 	    if (!this.guide.helperLayer) {
 	      this.guide.helperLayer = createHelperLayer(helperLayerStryle);
-	      body.appendChild(this.guide.helperLayer);
+	      this.body.appendChild(this.guide.helperLayer);
 	    } else {
 	      setStyle(this.guide.helperLayer, helperLayerStryle);
 	    }
+	  }
 
-	    const tooltipStyle = {
-	      width: currentStep.width + 'px',
-	      height: currentStep.height + 'px',
-	      top: height + top + offsetTop + 'px',
-	      left: left + offsetLeft + 'px'
-	    };
+	  _removeHelperLayer() {
+	    this.guide.helperLayer.remove();
+	  }
 
-	    if (!this.guide.tooltip) {
-	      this.guide.tooltip = createTooltip(tooltipStyle);
-	      body.appendChild(this.guide.tooltip);
+	  _createToolTip() {
+	    const toolTipStyle = this._getDomStyle("toolTipStyle");
+
+	    if (!this.guide.toolTip) {
+	      this.guide.toolTip = createTooltip(toolTipStyle);
+	      this.body.appendChild(this.guide.toolTip);
 	    } else {
-	      setStyle(this.guide.tooltip, tooltipStyle);
+	      setStyle(this.guide.toolTip, toolTipStyle);
 	    }
+	  }
+
+	  _removeToolTip() {
+	    this.guide.toolTip.remove();
 	  }
 
 	}
@@ -352,6 +380,9 @@
 	    this.steps = [];
 	    this.currentStep = null;
 	    this.currentStepNumber = -1;
+	    this.overlayer = null;
+	    this.toolTip = null;
+	    this.helperLayer = null;
 	    this.setOptions(options$1);
 	    this.setOptions(customOptions);
 	  }
@@ -364,7 +395,9 @@
 	    if (val && this.currentStep !== val) {
 	      this._currentStep = val;
 	      this.currentStep.create();
-	      this.createDom();
+
+	      this._createOverlayer();
+
 	      stepChange(this);
 	    }
 	  }
@@ -450,7 +483,9 @@
 
 	  skipstep() {}
 
-	  donestep() {}
+	  donestep() {
+	    this.exit();
+	  }
 
 	  getcurrentstep() {}
 
@@ -460,15 +495,24 @@
 	    return this;
 	  }
 
-	  exit() {}
+	  exit() {
+	    this._removeOverlayer();
 
-	  createDom() {
+	    this.currentStep.destory();
+	  }
+
+	  _createOverlayer() {
 	    // 遮罩层
+	    if (this.overlayer) return;
 	    this.overlayer = createOverlayer({
 	      opacity: this.overlayOpacity
 	    });
-	    const body = document.getElementsByTagName('body')[0];
-	    body.appendChild(this.overlayer);
+	    this.body = document.getElementsByTagName('body')[0];
+	    this.body.appendChild(this.overlayer);
+	  }
+
+	  _removeOverlayer() {
+	    this.overlayer.remove();
 	  }
 
 	}

@@ -14,6 +14,9 @@ export default class Guide {
 		this.steps = []
 		this.currentStep = null
 		this.currentStepNumber = -1
+		this.overlayer = null
+		this.toolTip = null
+		this.helperLayer = null
 		this.setOptions(options)
 		this.setOptions(customOptions)
 	}
@@ -24,7 +27,7 @@ export default class Guide {
 		if (val && this.currentStep !== val) {
 			this._currentStep = val
 			this.currentStep.create()
-			this.createDom()
+			this._createOverlayer()
 			stepChange(this)
 		}
 	}
@@ -93,20 +96,29 @@ export default class Guide {
 		}
 	}
 	skipstep() {}
-	donestep() {}
+	donestep() {
+		this.exit()
+	}
 	getcurrentstep() {}
 	start() {
 		this.goToStepNumber(0)
 		windowResize(this.currentStep)
 		return this
 	}
-	exit() {}
-	createDom() {
+	exit() {
+		this._removeOverlayer()
+		this.currentStep.destory()
+	}
+	_createOverlayer() {
 		// 遮罩层
+		if(this.overlayer)return
 		this.overlayer = createOverlayer({
 			opacity: this.overlayOpacity,
 		})
-		const body = document.getElementsByTagName('body')[0]
-		body.appendChild(this.overlayer)
+		this.body = document.getElementsByTagName('body')[0]
+		this.body.appendChild(this.overlayer)
+	}
+	_removeOverlayer(){
+		this.overlayer.remove()
 	}
 }
