@@ -16,6 +16,8 @@
   opacity: 1;
   cursor: pointer;
   z-index: 9992; }
+  .guide-helperLayer.animation {
+    transition: all 0.5s; }
 
 .guide-tooltip {
   background: #ffffff;
@@ -27,6 +29,8 @@
   z-index: 9993;
   cursor: pointer;
   padding: 24px; }
+  .guide-tooltip.animation {
+    transition: all 0.5s; }
   .guide-tooltip:before {
     content: '';
     border-style: solid;
@@ -68,3 +72,7 @@
       .guide-tooltip .guide-button-box .guide-button.guide-done-button {
         background: #2878ff;
         color: #ffffff; }
+  .guide-tooltip .show {
+    display: block; }
+  .guide-tooltip .hide {
+    display: none; }

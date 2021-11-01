@@ -2,6 +2,7 @@ import options from '../options/global'
 import Step from '../step/index'
 import { TypeOf } from '../tools/tools'
 import { createOverlayer } from '../core/createElement'
+import { windowResize, stepChange } from '../core/event'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -24,6 +25,7 @@ export default class Guide {
 			this._currentStep = val
 			this.currentStep.create()
 			this.createDom()
+			stepChange(this)
 		}
 	}
 
@@ -84,12 +86,18 @@ export default class Guide {
 			this.goToStepNumber(number + 1)
 		}
 	}
-	prevstep() {}
+	prevstep() {
+		const number = this.currentStepNumber
+		if (number > 0) {
+			this.goToStepNumber(number - 1)
+		}
+	}
 	skipstep() {}
 	donestep() {}
 	getcurrentstep() {}
 	start() {
 		this.goToStepNumber(0)
+		windowResize(this.currentStep)
 		return this
 	}
 	exit() {}
