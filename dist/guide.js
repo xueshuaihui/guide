@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Tue, 02 Nov 2021 04:01:13 GMT
+ * Date: Tue, 02 Nov 2021 10:55:58 GMT
  */
 
 (function (global, factory) {
@@ -124,114 +124,112 @@
 	  return element;
 	};
 
-	const _next = () => {
-	  guide.nextstep();
+	const _next = function () {
+	  this.nextstep();
 	};
 
-	const _prev = () => {
-	  guide.prevstep();
+	const _prev = function () {
+	  this.prevstep();
 	};
 
-	const _skip = () => {
-	  guide.skipstep();
+	const _skip = function () {
+	  this.skipstep();
 	};
 
-	const _done = () => {
-	  guide.donestep();
-	};
-
-	let next = null;
-	let prev = null;
-	let skip = null;
-	let done = null;
-
-	const getdom = () => {
-	  next = next ? next : document.querySelector('.guide-next-button');
-	  prev = prev ? prev : document.querySelector('.guide-prev-button');
-	  skip = skip ? skip : document.querySelector('.guide-skip-button');
-	  done = done ? done : document.querySelector('.guide-done-button');
+	const _done = function () {
+	  this.donestep();
 	};
 	/**
 	 * 按钮绑定点击事件
-	 * @param {Object} step  当前步骤step 对象
 	 */
 
 
-	const buttonAddEventListener = step => {
-	  if (!step || !step.guide) return;
-	  step.guide;
-	  getdom();
-	  next.addEventListener('click', _next);
-	  prev.addEventListener('click', _prev);
-	  skip.addEventListener('click', _skip);
-	  done.addEventListener('click', _done);
+	const buttonAddEventListener = function () {
+	  if (!this.guide) return;
+	  const guide = this.guide;
+	  buttonRemoveEventListener.apply(this);
+	  this.button.next?.addEventListener('click', _next.bind(guide));
+	  this.button.prev?.addEventListener('click', _prev.bind(guide));
+	  this.button.skip?.addEventListener('click', _skip.bind(guide));
+	  this.button.done?.addEventListener('click', _done.bind(guide));
 	};
 	/**
 	 * 按钮解除点击事件
-	 * @param {Object} step  当前步骤step 对象
 	 */
 
-	const buttonRemoveEventListener = step => {
-	  if (!step || !step.guide) return;
-	  step.guide;
-	  getdom();
-	  next.removeEventListener('click', _next);
-	  prev.removeEventListener('click', _prev);
-	  skip.removeEventListener('click', _skip);
-	  done.removeEventListener('click', _done);
+	const buttonRemoveEventListener = function () {
+	  if (!this.guide) return;
+	  const guide = this.guide;
+	  this.button.next?.removeEventListener('click', _next.bind(guide));
+	  this.button.prev?.removeEventListener('click', _prev.bind(guide));
+	  this.button.skip?.removeEventListener('click', _skip.bind(guide));
+	  this.button.done?.removeEventListener('click', _done.bind(guide));
 	};
 	/**
 	 * 屏幕resize 事件
-	 * @param {Object} step  当前步骤step 对象
 	 */
 
-	const windowResize = step => {
-	  window.onresize = () => {
-	    step.create();
-	  };
+	const _resizeCB = function () {
+	  this.create();
 	};
 
-	const _classNameInit = () => {
-	  const dom = [next, prev, skip, done];
-	  dom.forEach(item => {
+	const addWindowResizeListener = function () {
+	  window.addEventListener('resize', _resizeCB.bind(this));
+	};
+	const removeWindowResizeListener = function () {
+	  window.removeEventListener('resize', _resizeCB.bind(this));
+	};
+
+	const _classNameInit = function () {
+	  Object.values(this).forEach(item => {
 	    item && item.classList.remove('hide', 'show');
 	  });
 	};
 	/**
 	 * shep 发生改变时触发
-	 * @param {Object} guide  guide对象
 	 */
 
 
-	const stepChange = guide => {
-	  _classNameInit();
+	const stepChange = function () {
+	  if (!this.currentStep) return;
 
-	  const steps = guide.steps;
-	  const index = guide.currentStepNumber;
+	  _classNameInit.apply(this.currentStep.button);
+
+	  const steps = this.steps;
+	  const index = this.currentStepNumber;
 	  const length = steps.length;
+	  const {
+	    next,
+	    prev,
+	    skip,
+	    done
+	  } = this.currentStep.button;
 
 	  if (index === 0) {
 	    // 起始
-	    next.classList.add('show');
-	    prev.classList.add('hide');
-	    skip.classList.add('hide');
-	    done.classList.add('hide');
+	    next?.classList.add('show');
+	    prev?.classList.add('hide');
+	    skip?.classList.add('hide');
+	    done?.classList.add('hide');
 	  } else if (index === length - 1) {
 	    // done
-	    next.classList.add('hide');
-	    prev.classList.add('show');
-	    skip.classList.add('hide');
-	    done.classList.add('show');
+	    next?.classList.add('hide');
+	    prev?.classList.add('show');
+	    skip?.classList.add('hide');
+	    done?.classList.add('show');
 	  } else {
-	    next.classList.add('show');
-	    prev.classList.add('show');
-	    skip.classList.add('hide');
-	    done.classList.add('hide');
+	    next?.classList.add('show');
+	    prev?.classList.add('show');
+	    skip?.classList.add('hide');
+	    done?.classList.add('hide');
 	  }
 	};
 
-	const _locationEventCB = (...argus) => {
-	  console.log(argus);
+	const _locationEventCB = function (...argus) {
+	  // const arguments = argus[0].arguments
+	  const path = argus[0].arguments[2];
+	  const steps = this.allSteps ? this.allSteps[path] : null;
+	  this.setSteps(steps).start();
 	};
 	/**
 	 * 监听前端路由发生改变
@@ -239,7 +237,9 @@
 	 */
 
 
-	const locationAddEventListener = callback => {
+	const locationAddEventListener = function () {
+	  locationRemoveEventListener();
+
 	  const _historyWrap = function (type) {
 	    const orig = history[type];
 	    const e = new Event(type);
@@ -253,22 +253,21 @@
 
 	  history.pushState = _historyWrap('pushState');
 	  history.replaceState = _historyWrap('replaceState');
-	  window.addEventListener('hashchange', _locationEventCB);
-	  window.addEventListener('popstate', _locationEventCB);
-	  window.addEventListener('pushState', _locationEventCB);
-	  window.addEventListener('replaceState', _locationEventCB);
+	  window.addEventListener('hashchange', _locationEventCB.bind(this));
+	  window.addEventListener('popstate', _locationEventCB.bind(this));
+	  window.addEventListener('pushState', _locationEventCB.bind(this));
+	  window.addEventListener('replaceState', _locationEventCB.bind(this));
 	};
 	/**
 	 * 移除路由监听事件
 	 * @param {function} callback 路由发生改变时的回调
 	 */
 
-	const locationRemoveEventListener = () => {
-	  console.log('移除事件');
-	  window.removeEventListener('hashchange', _locationEventCB);
-	  window.removeEventListener('popstate', _locationEventCB);
-	  window.removeEventListener('pushState', _locationEventCB);
-	  window.removeEventListener('replaceState', _locationEventCB);
+	const locationRemoveEventListener = function () {
+	  window.removeEventListener('hashchange', _locationEventCB.bind(this));
+	  window.removeEventListener('popstate', _locationEventCB.bind(this));
+	  window.removeEventListener('pushState', _locationEventCB.bind(this));
+	  window.removeEventListener('replaceState', _locationEventCB.bind(this));
 	};
 
 	const createOverlayer = style => {
@@ -324,6 +323,12 @@
 	    this.target = null;
 	    this.content = null;
 	    this.guide = guide;
+	    this.button = {
+	      next: '.guide-next-button',
+	      prev: '.guide-prev-button',
+	      skip: '.guide-skip-button',
+	      done: '.guide-done-button'
+	    };
 	    this.setOptions(options);
 	    this.setOptions(customOptions);
 	  }
@@ -355,23 +360,27 @@
 	    const el = this.el;
 	    this.target = document.querySelector(el);
 
+	    if (!this.target) {
+	      console.error(`未找到${this.el}元素`);
+	    }
+
 	    this._createHelperLayer();
 
 	    this._createToolTip();
-
-	    buttonAddEventListener(this);
 	  }
 
 	  destory() {
-	    buttonRemoveEventListener(this);
-
 	    this._removeToolTip();
 
 	    this._removeHelperLayer();
+
+	    buttonRemoveEventListener.apply(this);
+
+	    this._clearButtonDom();
 	  }
 
 	  _getDomStyle(type) {
-	    this.body = document.getElementsByTagName("body")[0]; // 辅助层
+	    this.body = document.getElementsByTagName('body')[0]; // 辅助层
 
 	    const currentStep = this.guide.currentStep;
 	    const {
@@ -383,29 +392,29 @@
 	    const offsetTop = Number(currentStep.offsetTop);
 	    const offsetLeft = Number(currentStep.offsetLeft);
 	    const helperLayerStryle = {
-	      width: width + "px",
-	      height: height + "px",
-	      top: top + "px",
-	      left: left + "px"
+	      width: width + 'px',
+	      height: height + 'px',
+	      top: top + 'px',
+	      left: left + 'px'
 	    };
 	    const toolTipStyle = {
-	      width: currentStep.width + "px",
-	      height: currentStep.height + "px",
-	      top: height + top + offsetTop + "px",
-	      left: left + offsetLeft + "px"
+	      width: currentStep.width + 'px',
+	      height: currentStep.height + 'px',
+	      top: height + top + offsetTop + 'px',
+	      left: left + offsetLeft + 'px'
 	    };
 
 	    switch (type) {
-	      case "helperLayerStryle":
+	      case 'helperLayerStryle':
 	        return helperLayerStryle;
 
-	      case "toolTipStyle":
+	      case 'toolTipStyle':
 	        return toolTipStyle;
 	    }
 	  }
 
 	  _createHelperLayer() {
-	    const helperLayerStryle = this._getDomStyle("helperLayerStryle");
+	    const helperLayerStryle = this._getDomStyle('helperLayerStryle');
 
 	    if (!this.guide.helperLayer) {
 	      this.guide.helperLayer = createHelperLayer(helperLayerStryle);
@@ -416,22 +425,41 @@
 	  }
 
 	  _removeHelperLayer() {
-	    this.guide.helperLayer.remove();
+	    this.guide.helperLayer?.remove();
+	    this.guide.helperLayer = null;
 	  }
 
 	  _createToolTip() {
-	    const toolTipStyle = this._getDomStyle("toolTipStyle");
+	    const toolTipStyle = this._getDomStyle('toolTipStyle');
 
 	    if (!this.guide.toolTip) {
 	      this.guide.toolTip = createTooltip(toolTipStyle);
 	      this.body.appendChild(this.guide.toolTip);
+
+	      this._getButtonDom();
+
+	      buttonAddEventListener.apply(this);
 	    } else {
 	      setStyle(this.guide.toolTip, toolTipStyle);
+
+	      this._getButtonDom();
 	    }
 	  }
 
 	  _removeToolTip() {
-	    this.guide.toolTip.remove();
+	    this.guide.toolTip?.remove();
+	    this.guide.toolTip = null;
+	  }
+
+	  _getButtonDom() {
+	    this._button = this.button;
+	    Object.keys(this.button).forEach(key => {
+	      this.button[key] = document.querySelector(this.button[key]);
+	    });
+	  }
+
+	  _clearButtonDom() {
+	    this.button = this._button;
 	  }
 
 	}
@@ -445,7 +473,7 @@
 	class Guide {
 	  constructor(customOptions) {
 	    // global options
-	    this.allSteps = {}; // 所有页面的步骤集合
+	    this.allSteps = null; // 所有页面的步骤集合
 
 	    this.steps = []; // 当前页面的步骤集合
 
@@ -465,11 +493,11 @@
 	  set currentStep(val) {
 	    if (val && this.currentStep !== val) {
 	      this._currentStep = val;
-	      this.currentStep.create();
+	      this.currentStep?.create();
 
 	      this._createOverlayer();
 
-	      stepChange(this);
+	      stepChange.apply(this);
 	    }
 	  }
 	  /**
@@ -499,6 +527,10 @@
 	  }
 
 	  addstep(stepOptions) {
+	    if (!this.steps) {
+	      this.steps = [];
+	    }
+
 	    this.steps.push(new Step(stepOptions, this));
 	    return this;
 	  }
@@ -515,8 +547,16 @@
 	    return this;
 	  }
 
-	  addAllSteps() {
-	    locationAddEventListener();
+	  setSteps(stepDatas) {
+	    this.steps = null;
+	    this.addsteps(stepDatas);
+	    return this;
+	  }
+
+	  addAllSteps(allSteps) {
+	    if (TypeOf(allSteps) !== 'object') return;
+	    this.allSteps = allSteps;
+	    locationAddEventListener.apply(this);
 	    return this;
 	  }
 
@@ -566,16 +606,18 @@
 	  getcurrentstep() {}
 
 	  start() {
+	    if (!this.steps || this.steps?.length === 0) return;
 	    this.goToStepNumber(0);
-	    windowResize(this.currentStep);
+	    addWindowResizeListener.apply(this.currentStep);
 	    return this;
 	  }
 
 	  exit() {
 	    this._removeOverlayer();
 
-	    this.currentStep?.destory();
 	    locationRemoveEventListener();
+	    removeWindowResizeListener.apply(this.currentStep);
+	    this.currentStep?.destory(); // this.goToStepNumber(-1)
 	  }
 
 	  _createOverlayer() {
@@ -589,7 +631,7 @@
 	  }
 
 	  _removeOverlayer() {
-	    this.overlayer?.remove();
+	    this.overlayer?.remove(); // this.overlayer = null
 	  }
 
 	}

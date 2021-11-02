@@ -3,7 +3,8 @@ import Step from '../step/index'
 import { TypeOf } from '../tools/tools'
 import { createOverlayer } from '../core/createElement'
 import {
-	windowResize,
+	addWindowResizeListener,
+	removeWindowResizeListener,
 	stepChange,
 	locationAddEventListener,
 	locationRemoveEventListener,
@@ -16,7 +17,7 @@ import {
 export default class Guide {
 	constructor(customOptions) {
 		// global options
-		this.allSteps = {} // 所有页面的步骤集合
+		this.allSteps = null // 所有页面的步骤集合
 		this.steps = [] // 当前页面的步骤集合
 		this.currentStep = null
 		this.currentStepNumber = -1
@@ -32,9 +33,9 @@ export default class Guide {
 	set currentStep(val) {
 		if (val && this.currentStep !== val) {
 			this._currentStep = val
-			this.currentStep.create()
+			this.currentStep?.create()
 			this._createOverlayer()
-			stepChange(this)
+			stepChange.apply(this)
 		}
 	}
 
@@ -60,6 +61,9 @@ export default class Guide {
 		return this
 	}
 	addstep(stepOptions) {
+		if (!this.steps) {
+			this.steps = []
+		}
 		this.steps.push(new Step(stepOptions, this))
 		return this
 	}
@@ -73,8 +77,15 @@ export default class Guide {
 		}
 		return this
 	}
-	addAllSteps() {
-		locationAddEventListener()
+	setSteps(stepDatas) {
+		this.steps = null
+		this.addsteps(stepDatas)
+		return this
+	}
+	addAllSteps(allSteps) {
+		if (TypeOf(allSteps) !== 'object') return
+		this.allSteps = allSteps
+		locationAddEventListener.apply(this)
 		return this
 	}
 	goToStep(step) {
@@ -111,14 +122,17 @@ export default class Guide {
 	}
 	getcurrentstep() {}
 	start() {
+		if (!this.steps || this.steps?.length === 0) return
 		this.goToStepNumber(0)
-		windowResize(this.currentStep)
+		addWindowResizeListener.apply(this.currentStep)
 		return this
 	}
 	exit() {
 		this._removeOverlayer()
-		this.currentStep?.destory()
 		locationRemoveEventListener()
+		removeWindowResizeListener.apply(this.currentStep)
+		this.currentStep?.destory()
+		// this.goToStepNumber(-1)
 	}
 	_createOverlayer() {
 		// 遮罩层
@@ -131,5 +145,6 @@ export default class Guide {
 	}
 	_removeOverlayer() {
 		this.overlayer?.remove()
+		// this.overlayer = null
 	}
 }

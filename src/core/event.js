@@ -1,107 +1,98 @@
-const _next = () => {
-	guide.nextstep()
+const _next = function () {
+	this.nextstep()
 }
-const _prev = () => {
-	guide.prevstep()
+const _prev = function () {
+	this.prevstep()
 }
-const _skip = () => {
-	guide.skipstep()
+const _skip = function () {
+	this.skipstep()
 }
-const _done = () => {
-	guide.donestep()
-}
-let next = null
-let prev = null
-let skip = null
-let done = null
-const getdom = () => {
-	next = next ? next : document.querySelector('.guide-next-button')
-	prev = prev ? prev : document.querySelector('.guide-prev-button')
-	skip = skip ? skip : document.querySelector('.guide-skip-button')
-	done = done ? done : document.querySelector('.guide-done-button')
+const _done = function () {
+	this.donestep()
 }
 /**
  * 按钮绑定点击事件
- * @param {Object} step  当前步骤step 对象
  */
-export const buttonAddEventListener = (step) => {
-	if (!step || !step.guide) return
-	const guide = step.guide
-	getdom()
-	next.addEventListener('click', _next)
-	prev.addEventListener('click', _prev)
-	skip.addEventListener('click', _skip)
-	done.addEventListener('click', _done)
+export const buttonAddEventListener = function () {
+	if (!this.guide) return
+	const guide = this.guide
+	buttonRemoveEventListener.apply(this)
+	this.button.next?.addEventListener('click', _next.bind(guide))
+	this.button.prev?.addEventListener('click', _prev.bind(guide))
+	this.button.skip?.addEventListener('click', _skip.bind(guide))
+	this.button.done?.addEventListener('click', _done.bind(guide))
 }
 /**
  * 按钮解除点击事件
- * @param {Object} step  当前步骤step 对象
  */
-export const buttonRemoveEventListener = (step) => {
-	if (!step || !step.guide) return
-	const guide = step.guide
-	getdom()
-	next.removeEventListener('click', _next)
-	prev.removeEventListener('click', _prev)
-	skip.removeEventListener('click', _skip)
-	done.removeEventListener('click', _done)
+export const buttonRemoveEventListener = function () {
+	if (!this.guide) return
+	const guide = this.guide
+	this.button.next?.removeEventListener('click', _next.bind(guide))
+	this.button.prev?.removeEventListener('click', _prev.bind(guide))
+	this.button.skip?.removeEventListener('click', _skip.bind(guide))
+	this.button.done?.removeEventListener('click', _done.bind(guide))
 }
 /**
  * 屏幕resize 事件
- * @param {Object} step  当前步骤step 对象
  */
-export const windowResize = (step) => {
-	window.onresize = () => {
-		step.create()
-	}
+const _resizeCB = function () {
+	this.create()
+}
+export const addWindowResizeListener = function () {
+	window.addEventListener('resize', _resizeCB.bind(this))
+}
+export const removeWindowResizeListener = function () {
+	window.removeEventListener('resize', _resizeCB.bind(this))
 }
 
-const _classNameInit = () => {
-	const dom = [next, prev, skip, done]
-	dom.forEach((item) => {
+const _classNameInit = function () {
+	Object.values(this).forEach((item) => {
 		item && item.classList.remove('hide', 'show')
 	})
 }
 /**
  * shep 发生改变时触发
- * @param {Object} guide  guide对象
  */
-export const stepChange = (guide) => {
-	_classNameInit()
-	const steps = guide.steps
-	const index = guide.currentStepNumber
+export const stepChange = function () {
+	if (!this.currentStep) return
+	_classNameInit.apply(this.currentStep.button)
+	const steps = this.steps
+	const index = this.currentStepNumber
 	const length = steps.length
+	const { next, prev, skip, done } = this.currentStep.button
 	if (index === 0) {
 		// 起始
-		next.classList.add('show')
-		prev.classList.add('hide')
-		skip.classList.add('hide')
-		done.classList.add('hide')
+		next?.classList.add('show')
+		prev?.classList.add('hide')
+		skip?.classList.add('hide')
+		done?.classList.add('hide')
 	} else if (index === length - 1) {
 		// done
-		next.classList.add('hide')
-		prev.classList.add('show')
-		skip.classList.add('hide')
-		done.classList.add('show')
+		next?.classList.add('hide')
+		prev?.classList.add('show')
+		skip?.classList.add('hide')
+		done?.classList.add('show')
 	} else {
-		next.classList.add('show')
-		prev.classList.add('show')
-		skip.classList.add('hide')
-		done.classList.add('hide')
+		next?.classList.add('show')
+		prev?.classList.add('show')
+		skip?.classList.add('hide')
+		done?.classList.add('hide')
 	}
 }
-const _locationEventCB = (...argus) => {
-	console.log(argus)
-    const arguments = argus[0].arguments
-    const path = arguments[2]
+const _locationEventCB = function (...argus) {
+	// const arguments = argus[0].arguments
+	const path = argus[0].arguments[2]
+	const steps = this.allSteps ? this.allSteps[path] : null
+	this.setSteps(steps).start()
 }
 /**
  * 监听前端路由发生改变
  * @param {function} callback 路由发生改变时的回调
  */
-export const locationAddEventListener = (callback) => {
+export const locationAddEventListener = function () {
 	locationRemoveEventListener()
-    const _historyWrap = function (type) {
+	const _historyWrap = function (type) {
 		const orig = history[type]
 		const e = new Event(type)
 		return function () {
@@ -114,18 +105,18 @@ export const locationAddEventListener = (callback) => {
 	history.pushState = _historyWrap('pushState')
 	history.replaceState = _historyWrap('replaceState')
 
-	window.addEventListener('hashchange', _locationEventCB)
-	window.addEventListener('popstate', _locationEventCB)
-	window.addEventListener('pushState', _locationEventCB)
-	window.addEventListener('replaceState', _locationEventCB)
+	window.addEventListener('hashchange', _locationEventCB.bind(this))
+	window.addEventListener('popstate', _locationEventCB.bind(this))
+	window.addEventListener('pushState', _locationEventCB.bind(this))
+	window.addEventListener('replaceState', _locationEventCB.bind(this))
 }
 /**
  * 移除路由监听事件
  * @param {function} callback 路由发生改变时的回调
  */
-export const locationRemoveEventListener = () => {
-	window.removeEventListener('hashchange', _locationEventCB)
-	window.removeEventListener('popstate', _locationEventCB)
-	window.removeEventListener('pushState', _locationEventCB)
-	window.removeEventListener('replaceState', _locationEventCB)
+export const locationRemoveEventListener = function () {
+	window.removeEventListener('hashchange', _locationEventCB.bind(this))
+	window.removeEventListener('popstate', _locationEventCB.bind(this))
+	window.removeEventListener('pushState', _locationEventCB.bind(this))
+	window.removeEventListener('replaceState', _locationEventCB.bind(this))
 }

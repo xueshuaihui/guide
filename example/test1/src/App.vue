@@ -21,13 +21,19 @@ export default {
 					height: 198,
 				},
 				{
-					el: '.test12',
+					el: '.test2',
 					content: 'test',
 					width: 410,
 					height: 198,
 				},
 				{
-					el: '.test13',
+					el: '.test3',
+					content: 'test',
+					width: 410,
+					height: 198,
+				},
+				{
+					el: '.test4',
 					content: 'test',
 					width: 410,
 					height: 198,
@@ -41,20 +47,19 @@ export default {
 					height: 198,
 				},
 				{
-					el: '.test12',
+					el: '.test2',
 					content: 'test',
 					width: 410,
 					height: 198,
 				},
 				{
-					el: '.test13',
+					el: '.test3',
 					content: 'test',
 					width: 410,
 					height: 198,
 				},
 			],
 		})
-		console.log(guide)
 		// setTimeout(() => {
 		// 	guide.exit()
 		// }, 5000)
