@@ -14,30 +14,28 @@ const _done = function () {
  * 按钮绑定点击事件
  */
 export const buttonAddEventListener = function () {
-	if (!this.guide) return
-	const guide = this.guide
+	if (!this.currentStep) return
 	buttonRemoveEventListener.apply(this)
-	this.button.next?.addEventListener('click', _next.bind(guide))
-	this.button.prev?.addEventListener('click', _prev.bind(guide))
-	this.button.skip?.addEventListener('click', _skip.bind(guide))
-	this.button.done?.addEventListener('click', _done.bind(guide))
+	this.button.next?.addEventListener('click', _next.bind(this))
+	this.button.prev?.addEventListener('click', _prev.bind(this))
+	this.button.skip?.addEventListener('click', _skip.bind(this))
+	this.button.done?.addEventListener('click', _done.bind(this))
 }
 /**
  * 按钮解除点击事件
  */
 export const buttonRemoveEventListener = function () {
-	if (!this.guide) return
-	const guide = this.guide
-	this.button.next?.removeEventListener('click', _next.bind(guide))
-	this.button.prev?.removeEventListener('click', _prev.bind(guide))
-	this.button.skip?.removeEventListener('click', _skip.bind(guide))
-	this.button.done?.removeEventListener('click', _done.bind(guide))
+	if (!this.currentStep) return
+	this.button.next?.removeEventListener('click', _next.bind(this), true)
+	this.button.prev?.removeEventListener('click', _prev.bind(this))
+	this.button.skip?.removeEventListener('click', _skip.bind(this))
+	this.button.done?.removeEventListener('click', _done.bind(this))
 }
 /**
  * 屏幕resize 事件
  */
 const _resizeCB = function () {
-	this.create()
+	this.currentStep.create()
 }
 export const addWindowResizeListener = function () {
 	window.addEventListener('resize', _resizeCB.bind(this))
@@ -56,11 +54,11 @@ const _classNameInit = function () {
  */
 export const stepChange = function () {
 	if (!this.currentStep) return
-	_classNameInit.apply(this.currentStep.button)
+	_classNameInit.apply(this.button)
 	const steps = this.steps
 	const index = this.currentStepNumber
 	const length = steps.length
-	const { next, prev, skip, done } = this.currentStep.button
+	const { next, prev, skip, done } = this.button
 	if (index === 0) {
 		// 起始
 		next?.classList.add('show')

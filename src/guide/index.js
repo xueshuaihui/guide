@@ -8,7 +8,11 @@ import {
 	stepChange,
 	locationAddEventListener,
 	locationRemoveEventListener,
+	buttonAddEventListener,
+	buttonRemoveEventListener,
 } from '../core/event'
+
+import buttons from '../core/button'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -24,6 +28,7 @@ export default class Guide {
 		this.overlayer = null
 		this.toolTip = null
 		this.helperLayer = null
+		this.button = JSON.parse(JSON.stringify(buttons))
 		this.setOptions(options)
 		this.setOptions(customOptions)
 	}
@@ -31,9 +36,11 @@ export default class Guide {
 		return this._currentStep
 	}
 	set currentStep(val) {
-		if (val && this.currentStep !== val) {
+		if (this.currentStep !== val) {
 			this._currentStep = val
+			if (!this._currentStep) return
 			this.currentStep?.create()
+			this._getButtonDom()
 			this._createOverlayer()
 			stepChange.apply(this)
 		}
@@ -124,15 +131,22 @@ export default class Guide {
 	start() {
 		if (!this.steps || this.steps?.length === 0) return
 		this.goToStepNumber(0)
-		addWindowResizeListener.apply(this.currentStep)
+		buttonAddEventListener.apply(this)
+		addWindowResizeListener.apply(this)
+		console.log(this)
 		return this
 	}
 	exit() {
+		buttonRemoveEventListener.apply(this)
 		this._removeOverlayer()
 		locationRemoveEventListener()
-		removeWindowResizeListener.apply(this.currentStep)
+		removeWindowResizeListener.apply(this)
 		this.currentStep?.destory()
-		// this.goToStepNumber(-1)
+		this.goToStepNumber(-1)
+		this._clearButtonDom()
+		this.steps = null
+		console.log(this)
+		return this
 	}
 	_createOverlayer() {
 		// 遮罩层
@@ -145,6 +159,16 @@ export default class Guide {
 	}
 	_removeOverlayer() {
 		this.overlayer?.remove()
-		// this.overlayer = null
+		this.overlayer = null
+	}
+	_getButtonDom() {
+		Object.keys(this.button).forEach((key) => {
+			if (TypeOf(this.button[key]) === 'string') {
+				this.button[key] = document.querySelector(this.button[key])
+			}
+		})
+	}
+	_clearButtonDom() {
+		this.button = JSON.parse(JSON.stringify(buttons))
 	}
 }

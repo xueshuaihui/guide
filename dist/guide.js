@@ -124,6 +124,174 @@
 	  return element;
 	};
 
+	const createOverlayer = style => {
+	  let attr = {
+	    style: style
+	  };
+	  attr.class = 'guide-overlayer';
+	  const element = createElement('div', attr);
+	  return element;
+	};
+	const createHelperLayer = style => {
+	  let attr = {
+	    style: style
+	  };
+	  attr.class = 'guide-helperLayer';
+	  return createElement('div', attr);
+	};
+	const createTooltip = style => {
+	  let attr = {
+	    style: style
+	  };
+	  attr.class = 'guide-tooltip';
+	  const dom = createElement('div', attr);
+	  dom.innerHTML = `
+    <div class="guide-container">
+    <div class="guide-image">
+        <img src="" alt="" />
+    </div>
+    <div class="guide-message">
+        <h4>创建批注</h4>
+        <p>在设计图上 单击 或 拖拽 绘制 快捷键</p>
+    </div>
+</div>
+<div class="guide-button-box">
+    <div class="guide-button guide-next-button">继续探索</div>
+    <div class="guide-button guide-prev-button">上一步</div>
+    <div class="guide-button guide-skip-button">跳过</div>
+    <div class="guide-button guide-done-button">知道啦</div>
+</div>
+     `;
+	  return dom;
+	};
+
+	/**
+	 * Step类，代表一个步骤.
+	 * @constructor
+	 * @param customOptions {json} 自定义设置
+	 */
+
+	class Step {
+	  constructor(customOptions, guide) {
+	    this.el = null;
+	    this.target = null;
+	    this.content = null;
+	    this.guide = guide;
+	    this.setOptions(options);
+	    this.setOptions(customOptions);
+	  }
+	  /**
+	   * 单个设置option
+	   * @param {string} key - option key.
+	   * @param {object} value - option value.
+	   */
+
+
+	  setOption(key, value) {
+	    if (!key || !value) return;
+	    this[key] = value;
+	  }
+	  /**
+	   * 批量设置option
+	   * @param {json} options - options 集合{key, value}.
+	   */
+
+
+	  setOptions(options) {
+	    if (!options) return;
+	    Object.keys(options).forEach(key => {
+	      this.setOption(key, options[key]);
+	    });
+	  }
+
+	  create() {
+	    const el = this.el;
+	    this.target = document.querySelector(el);
+
+	    if (!this.target) {
+	      console.error(`未找到${this.el}元素`);
+	      return;
+	    }
+
+	    this._createHelperLayer();
+
+	    this._createToolTip();
+	  }
+
+	  destory() {
+	    this._removeToolTip();
+
+	    this._removeHelperLayer();
+	  }
+
+	  _getDomStyle(type) {
+	    this.body = document.getElementsByTagName('body')[0]; // 辅助层
+
+	    const currentStep = this.guide.currentStep;
+	    const {
+	      width,
+	      height,
+	      top,
+	      left
+	    } = currentStep.target.getBoundingClientRect();
+	    const offsetTop = Number(currentStep.offsetTop);
+	    const offsetLeft = Number(currentStep.offsetLeft);
+	    const helperLayerStryle = {
+	      width: width + 'px',
+	      height: height + 'px',
+	      top: top + 'px',
+	      left: left + 'px'
+	    };
+	    const toolTipStyle = {
+	      width: currentStep.width + 'px',
+	      height: currentStep.height + 'px',
+	      top: height + top + offsetTop + 'px',
+	      left: left + offsetLeft + 'px'
+	    };
+
+	    switch (type) {
+	      case 'helperLayerStryle':
+	        return helperLayerStryle;
+
+	      case 'toolTipStyle':
+	        return toolTipStyle;
+	    }
+	  }
+
+	  _createHelperLayer() {
+	    const helperLayerStryle = this._getDomStyle('helperLayerStryle');
+
+	    if (!this.guide.helperLayer) {
+	      this.guide.helperLayer = createHelperLayer(helperLayerStryle);
+	      this.body.appendChild(this.guide.helperLayer);
+	    } else {
+	      setStyle(this.guide.helperLayer, helperLayerStryle);
+	    }
+	  }
+
+	  _removeHelperLayer() {
+	    this.guide.helperLayer?.remove();
+	    this.guide.helperLayer = null;
+	  }
+
+	  _createToolTip() {
+	    const toolTipStyle = this._getDomStyle('toolTipStyle');
+
+	    if (!this.guide.toolTip) {
+	      this.guide.toolTip = createTooltip(toolTipStyle);
+	      this.body.appendChild(this.guide.toolTip);
+	    } else {
+	      setStyle(this.guide.toolTip, toolTipStyle);
+	    }
+	  }
+
+	  _removeToolTip() {
+	    this.guide.toolTip?.remove();
+	    this.guide.toolTip = null;
+	  }
+
+	}
+
 	const _next = function () {
 	  this.nextstep();
 	};
@@ -145,32 +313,30 @@
 
 
 	const buttonAddEventListener = function () {
-	  if (!this.guide) return;
-	  const guide = this.guide;
+	  if (!this.currentStep) return;
 	  buttonRemoveEventListener.apply(this);
-	  this.button.next?.addEventListener('click', _next.bind(guide));
-	  this.button.prev?.addEventListener('click', _prev.bind(guide));
-	  this.button.skip?.addEventListener('click', _skip.bind(guide));
-	  this.button.done?.addEventListener('click', _done.bind(guide));
+	  this.button.next?.addEventListener('click', _next.bind(this));
+	  this.button.prev?.addEventListener('click', _prev.bind(this));
+	  this.button.skip?.addEventListener('click', _skip.bind(this));
+	  this.button.done?.addEventListener('click', _done.bind(this));
 	};
 	/**
 	 * 按钮解除点击事件
 	 */
 
 	const buttonRemoveEventListener = function () {
-	  if (!this.guide) return;
-	  const guide = this.guide;
-	  this.button.next?.removeEventListener('click', _next.bind(guide));
-	  this.button.prev?.removeEventListener('click', _prev.bind(guide));
-	  this.button.skip?.removeEventListener('click', _skip.bind(guide));
-	  this.button.done?.removeEventListener('click', _done.bind(guide));
+	  if (!this.currentStep) return;
+	  this.button.next?.removeEventListener('click', _next.bind(this), true);
+	  this.button.prev?.removeEventListener('click', _prev.bind(this));
+	  this.button.skip?.removeEventListener('click', _skip.bind(this));
+	  this.button.done?.removeEventListener('click', _done.bind(this));
 	};
 	/**
 	 * 屏幕resize 事件
 	 */
 
 	const _resizeCB = function () {
-	  this.create();
+	  this.currentStep.create();
 	};
 
 	const addWindowResizeListener = function () {
@@ -193,7 +359,7 @@
 	const stepChange = function () {
 	  if (!this.currentStep) return;
 
-	  _classNameInit.apply(this.currentStep.button);
+	  _classNameInit.apply(this.button);
 
 	  const steps = this.steps;
 	  const index = this.currentStepNumber;
@@ -203,7 +369,7 @@
 	    prev,
 	    skip,
 	    done
-	  } = this.currentStep.button;
+	  } = this.button;
 
 	  if (index === 0) {
 	    // 起始
@@ -270,199 +436,12 @@
 	  window.removeEventListener('replaceState', _locationEventCB.bind(this));
 	};
 
-	const createOverlayer = style => {
-	  let attr = {
-	    style: style
-	  };
-	  attr.class = 'guide-overlayer';
-	  const element = createElement('div', attr);
-	  return element;
+	var buttons = {
+	  next: '.guide-next-button',
+	  prev: '.guide-prev-button',
+	  skip: '.guide-skip-button',
+	  done: '.guide-done-button'
 	};
-	const createHelperLayer = style => {
-	  let attr = {
-	    style: style
-	  };
-	  attr.class = 'guide-helperLayer';
-	  return createElement('div', attr);
-	};
-	const createTooltip = style => {
-	  let attr = {
-	    style: style
-	  };
-	  attr.class = 'guide-tooltip';
-	  const dom = createElement('div', attr);
-	  dom.innerHTML = `
-    <div class="guide-container">
-    <div class="guide-image">
-        <img src="" alt="" />
-    </div>
-    <div class="guide-message">
-        <h4>创建批注</h4>
-        <p>在设计图上 单击 或 拖拽 绘制 快捷键</p>
-    </div>
-</div>
-<div class="guide-button-box">
-    <div class="guide-button guide-next-button">继续探索</div>
-    <div class="guide-button guide-prev-button">上一步</div>
-    <div class="guide-button guide-skip-button">跳过</div>
-    <div class="guide-button guide-done-button">知道啦</div>
-</div>
-     `;
-	  return dom;
-	};
-
-	/**
-	 * Step类，代表一个步骤.
-	 * @constructor
-	 * @param customOptions {json} 自定义设置
-	 */
-
-	class Step {
-	  constructor(customOptions, guide) {
-	    this.el = null;
-	    this.target = null;
-	    this.content = null;
-	    this.guide = guide;
-	    this.button = {
-	      next: '.guide-next-button',
-	      prev: '.guide-prev-button',
-	      skip: '.guide-skip-button',
-	      done: '.guide-done-button'
-	    };
-	    this.setOptions(options);
-	    this.setOptions(customOptions);
-	  }
-	  /**
-	   * 单个设置option
-	   * @param {string} key - option key.
-	   * @param {object} value - option value.
-	   */
-
-
-	  setOption(key, value) {
-	    if (!key || !value) return;
-	    this[key] = value;
-	  }
-	  /**
-	   * 批量设置option
-	   * @param {json} options - options 集合{key, value}.
-	   */
-
-
-	  setOptions(options) {
-	    if (!options) return;
-	    Object.keys(options).forEach(key => {
-	      this.setOption(key, options[key]);
-	    });
-	  }
-
-	  create() {
-	    const el = this.el;
-	    this.target = document.querySelector(el);
-
-	    if (!this.target) {
-	      console.error(`未找到${this.el}元素`);
-	    }
-
-	    this._createHelperLayer();
-
-	    this._createToolTip();
-	  }
-
-	  destory() {
-	    this._removeToolTip();
-
-	    this._removeHelperLayer();
-
-	    buttonRemoveEventListener.apply(this);
-
-	    this._clearButtonDom();
-	  }
-
-	  _getDomStyle(type) {
-	    this.body = document.getElementsByTagName('body')[0]; // 辅助层
-
-	    const currentStep = this.guide.currentStep;
-	    const {
-	      width,
-	      height,
-	      top,
-	      left
-	    } = currentStep.target.getBoundingClientRect();
-	    const offsetTop = Number(currentStep.offsetTop);
-	    const offsetLeft = Number(currentStep.offsetLeft);
-	    const helperLayerStryle = {
-	      width: width + 'px',
-	      height: height + 'px',
-	      top: top + 'px',
-	      left: left + 'px'
-	    };
-	    const toolTipStyle = {
-	      width: currentStep.width + 'px',
-	      height: currentStep.height + 'px',
-	      top: height + top + offsetTop + 'px',
-	      left: left + offsetLeft + 'px'
-	    };
-
-	    switch (type) {
-	      case 'helperLayerStryle':
-	        return helperLayerStryle;
-
-	      case 'toolTipStyle':
-	        return toolTipStyle;
-	    }
-	  }
-
-	  _createHelperLayer() {
-	    const helperLayerStryle = this._getDomStyle('helperLayerStryle');
-
-	    if (!this.guide.helperLayer) {
-	      this.guide.helperLayer = createHelperLayer(helperLayerStryle);
-	      this.body.appendChild(this.guide.helperLayer);
-	    } else {
-	      setStyle(this.guide.helperLayer, helperLayerStryle);
-	    }
-	  }
-
-	  _removeHelperLayer() {
-	    this.guide.helperLayer?.remove();
-	    this.guide.helperLayer = null;
-	  }
-
-	  _createToolTip() {
-	    const toolTipStyle = this._getDomStyle('toolTipStyle');
-
-	    if (!this.guide.toolTip) {
-	      this.guide.toolTip = createTooltip(toolTipStyle);
-	      this.body.appendChild(this.guide.toolTip);
-
-	      this._getButtonDom();
-
-	      buttonAddEventListener.apply(this);
-	    } else {
-	      setStyle(this.guide.toolTip, toolTipStyle);
-
-	      this._getButtonDom();
-	    }
-	  }
-
-	  _removeToolTip() {
-	    this.guide.toolTip?.remove();
-	    this.guide.toolTip = null;
-	  }
-
-	  _getButtonDom() {
-	    this._button = this.button;
-	    Object.keys(this.button).forEach(key => {
-	      this.button[key] = document.querySelector(this.button[key]);
-	    });
-	  }
-
-	  _clearButtonDom() {
-	    this.button = this._button;
-	  }
-
-	}
 
 	/**
 	 * Guide类，代表一个引导流程.
@@ -482,6 +461,7 @@
 	    this.overlayer = null;
 	    this.toolTip = null;
 	    this.helperLayer = null;
+	    this.button = JSON.parse(JSON.stringify(buttons));
 	    this.setOptions(options$1);
 	    this.setOptions(customOptions);
 	  }
@@ -491,9 +471,12 @@
 	  }
 
 	  set currentStep(val) {
-	    if (val && this.currentStep !== val) {
+	    if (this.currentStep !== val) {
 	      this._currentStep = val;
+	      if (!this._currentStep) return;
 	      this.currentStep?.create();
+
+	      this._getButtonDom();
 
 	      this._createOverlayer();
 
@@ -608,16 +591,27 @@
 	  start() {
 	    if (!this.steps || this.steps?.length === 0) return;
 	    this.goToStepNumber(0);
-	    addWindowResizeListener.apply(this.currentStep);
+	    buttonAddEventListener.apply(this);
+	    addWindowResizeListener.apply(this);
+	    console.log(this);
 	    return this;
 	  }
 
 	  exit() {
+	    buttonRemoveEventListener.apply(this);
+
 	    this._removeOverlayer();
 
 	    locationRemoveEventListener();
-	    removeWindowResizeListener.apply(this.currentStep);
-	    this.currentStep?.destory(); // this.goToStepNumber(-1)
+	    removeWindowResizeListener.apply(this);
+	    this.currentStep?.destory();
+	    this.goToStepNumber(-1);
+
+	    this._clearButtonDom();
+
+	    this.steps = null;
+	    console.log(this);
+	    return this;
 	  }
 
 	  _createOverlayer() {
@@ -631,7 +625,20 @@
 	  }
 
 	  _removeOverlayer() {
-	    this.overlayer?.remove(); // this.overlayer = null
+	    this.overlayer?.remove();
+	    this.overlayer = null;
+	  }
+
+	  _getButtonDom() {
+	    Object.keys(this.button).forEach(key => {
+	      if (TypeOf(this.button[key]) === 'string') {
+	        this.button[key] = document.querySelector(this.button[key]);
+	      }
+	    });
+	  }
+
+	  _clearButtonDom() {
+	    this.button = JSON.parse(JSON.stringify(buttons));
 	  }
 
 	}

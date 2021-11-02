@@ -1,9 +1,5 @@
 import options from '../options/step'
 import { setStyle } from '../tools/tools'
-import {
-	buttonAddEventListener,
-	buttonRemoveEventListener,
-} from '../core/event'
 import { createHelperLayer, createTooltip } from '../core/createElement'
 /**
  * Step类，代表一个步骤.
@@ -16,12 +12,6 @@ export default class Step {
 		this.target = null
 		this.content = null
 		this.guide = guide
-		this.button = {
-			next: '.guide-next-button',
-			prev: '.guide-prev-button',
-			skip: '.guide-skip-button',
-			done: '.guide-done-button',
-		}
 		this.setOptions(options)
 		this.setOptions(customOptions)
 	}
@@ -49,6 +39,7 @@ export default class Step {
 		this.target = document.querySelector(el)
 		if (!this.target) {
 			console.error(`未找到${this.el}元素`)
+			return
 		}
 
 		this._createHelperLayer()
@@ -57,8 +48,6 @@ export default class Step {
 	destory() {
 		this._removeToolTip()
 		this._removeHelperLayer()
-		buttonRemoveEventListener.apply(this)
-		this._clearButtonDom()
 	}
 	_getDomStyle(type) {
 		this.body = document.getElementsByTagName('body')[0]
@@ -107,24 +96,12 @@ export default class Step {
 		if (!this.guide.toolTip) {
 			this.guide.toolTip = createTooltip(toolTipStyle)
 			this.body.appendChild(this.guide.toolTip)
-			this._getButtonDom()
-			buttonAddEventListener.apply(this)
 		} else {
 			setStyle(this.guide.toolTip, toolTipStyle)
-			this._getButtonDom()
 		}
 	}
 	_removeToolTip() {
 		this.guide.toolTip?.remove()
 		this.guide.toolTip = null
-	}
-	_getButtonDom() {
-		this._button = this.button
-		Object.keys(this.button).forEach((key) => {
-			this.button[key] = document.querySelector(this.button[key])
-		})
-	}
-	_clearButtonDom() {
-		this.button = this._button
 	}
 }
