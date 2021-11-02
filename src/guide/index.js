@@ -2,7 +2,12 @@ import options from '../options/global'
 import Step from '../step/index'
 import { TypeOf } from '../tools/tools'
 import { createOverlayer } from '../core/createElement'
-import { windowResize, stepChange } from '../core/event'
+import {
+	windowResize,
+	stepChange,
+	locationAddEventListener,
+	locationRemoveEventListener,
+} from '../core/event'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -11,7 +16,8 @@ import { windowResize, stepChange } from '../core/event'
 export default class Guide {
 	constructor(customOptions) {
 		// global options
-		this.steps = []
+		this.allSteps = {} // 所有页面的步骤集合
+		this.steps = [] // 当前页面的步骤集合
 		this.currentStep = null
 		this.currentStepNumber = -1
 		this.overlayer = null
@@ -67,6 +73,10 @@ export default class Guide {
 		}
 		return this
 	}
+	addAllSteps() {
+		locationAddEventListener()
+		return this
+	}
 	goToStep(step) {
 		if (this.currentStep !== step) {
 			this.currentStep = step
@@ -107,18 +117,19 @@ export default class Guide {
 	}
 	exit() {
 		this._removeOverlayer()
-		this.currentStep.destory()
+		this.currentStep?.destory()
+		locationRemoveEventListener()
 	}
 	_createOverlayer() {
 		// 遮罩层
-		if(this.overlayer)return
+		if (this.overlayer) return
 		this.overlayer = createOverlayer({
 			opacity: this.overlayOpacity,
 		})
 		this.body = document.getElementsByTagName('body')[0]
 		this.body.appendChild(this.overlayer)
 	}
-	_removeOverlayer(){
-		this.overlayer.remove()
+	_removeOverlayer() {
+		this.overlayer?.remove()
 	}
 }

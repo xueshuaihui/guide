@@ -1,7 +1,14 @@
-(function (factory) {
+/*!
+ * guide v1.0.0
+ * author: xuesh
+ * Date: Tue, 02 Nov 2021 04:01:13 GMT
+ */
+
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	factory();
-})((function () { 'use strict';
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Guide = factory());
+})(this, (function () { 'use strict';
 
 	var version = "1.0.0";
 
@@ -144,6 +151,11 @@
 	  skip = skip ? skip : document.querySelector('.guide-skip-button');
 	  done = done ? done : document.querySelector('.guide-done-button');
 	};
+	/**
+	 * 按钮绑定点击事件
+	 * @param {Object} step  当前步骤step 对象
+	 */
+
 
 	const buttonAddEventListener = step => {
 	  if (!step || !step.guide) return;
@@ -154,6 +166,11 @@
 	  skip.addEventListener('click', _skip);
 	  done.addEventListener('click', _done);
 	};
+	/**
+	 * 按钮解除点击事件
+	 * @param {Object} step  当前步骤step 对象
+	 */
+
 	const buttonRemoveEventListener = step => {
 	  if (!step || !step.guide) return;
 	  step.guide;
@@ -163,6 +180,11 @@
 	  skip.removeEventListener('click', _skip);
 	  done.removeEventListener('click', _done);
 	};
+	/**
+	 * 屏幕resize 事件
+	 * @param {Object} step  当前步骤step 对象
+	 */
+
 	const windowResize = step => {
 	  window.onresize = () => {
 	    step.create();
@@ -175,6 +197,11 @@
 	    item && item.classList.remove('hide', 'show');
 	  });
 	};
+	/**
+	 * shep 发生改变时触发
+	 * @param {Object} guide  guide对象
+	 */
+
 
 	const stepChange = guide => {
 	  _classNameInit();
@@ -201,6 +228,47 @@
 	    skip.classList.add('hide');
 	    done.classList.add('hide');
 	  }
+	};
+
+	const _locationEventCB = (...argus) => {
+	  console.log(argus);
+	};
+	/**
+	 * 监听前端路由发生改变
+	 * @param {function} callback 路由发生改变时的回调
+	 */
+
+
+	const locationAddEventListener = callback => {
+	  const _historyWrap = function (type) {
+	    const orig = history[type];
+	    const e = new Event(type);
+	    return function () {
+	      const rv = orig.apply(this, arguments);
+	      e.arguments = arguments;
+	      window.dispatchEvent(e);
+	      return rv;
+	    };
+	  };
+
+	  history.pushState = _historyWrap('pushState');
+	  history.replaceState = _historyWrap('replaceState');
+	  window.addEventListener('hashchange', _locationEventCB);
+	  window.addEventListener('popstate', _locationEventCB);
+	  window.addEventListener('pushState', _locationEventCB);
+	  window.addEventListener('replaceState', _locationEventCB);
+	};
+	/**
+	 * 移除路由监听事件
+	 * @param {function} callback 路由发生改变时的回调
+	 */
+
+	const locationRemoveEventListener = () => {
+	  console.log('移除事件');
+	  window.removeEventListener('hashchange', _locationEventCB);
+	  window.removeEventListener('popstate', _locationEventCB);
+	  window.removeEventListener('pushState', _locationEventCB);
+	  window.removeEventListener('replaceState', _locationEventCB);
 	};
 
 	const createOverlayer = style => {
@@ -377,7 +445,10 @@
 	class Guide {
 	  constructor(customOptions) {
 	    // global options
-	    this.steps = [];
+	    this.allSteps = {}; // 所有页面的步骤集合
+
+	    this.steps = []; // 当前页面的步骤集合
+
 	    this.currentStep = null;
 	    this.currentStepNumber = -1;
 	    this.overlayer = null;
@@ -444,6 +515,11 @@
 	    return this;
 	  }
 
+	  addAllSteps() {
+	    locationAddEventListener();
+	    return this;
+	  }
+
 	  goToStep(step) {
 	    if (this.currentStep !== step) {
 	      this.currentStep = step;
@@ -498,7 +574,8 @@
 	  exit() {
 	    this._removeOverlayer();
 
-	    this.currentStep.destory();
+	    this.currentStep?.destory();
+	    locationRemoveEventListener();
 	  }
 
 	  _createOverlayer() {
@@ -512,12 +589,13 @@
 	  }
 
 	  _removeOverlayer() {
-	    this.overlayer.remove();
+	    this.overlayer?.remove();
 	  }
 
 	}
 
-	Guide.prototype.version = version;
-	window.Guide = Guide;
+	Guide.prototype.version = version; // window.Guide = Guide
+
+	return Guide;
 
 }));
