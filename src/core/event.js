@@ -104,7 +104,7 @@ const _locationEventCB = function (...argus) {
 
 	setTimeout(() => {
 		this.setSteps(steps).start()
-	}, 80)
+	}, 200)
 }
 /**
  * 监听前端路由发生改变

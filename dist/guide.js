@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Tue, 02 Nov 2021 10:55:58 GMT
+ * Date: Wed, 03 Nov 2021 09:33:39 GMT
  */
 
 (function (global, factory) {
@@ -418,7 +418,7 @@
 	  const steps = this.allSteps ? this.allSteps[path] : null;
 	  setTimeout(() => {
 	    this.setSteps(steps).start();
-	  }, 80);
+	  }, 200);
 	};
 	/**
 	 * 监听前端路由发生改变
@@ -486,6 +486,7 @@
 	    this.overlayer = null;
 	    this.toolTip = null;
 	    this.helperLayer = null;
+	    this.container = null;
 	    this.button = JSON.parse(JSON.stringify(buttons));
 	    this.setOptions(options$1);
 	    this.setOptions(customOptions);

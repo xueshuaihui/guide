@@ -28,6 +28,7 @@ export default class Guide {
 		this.overlayer = null
 		this.toolTip = null
 		this.helperLayer = null
+		this.container = null
 		this.button = JSON.parse(JSON.stringify(buttons))
 		this.setOptions(options)
 		this.setOptions(customOptions)

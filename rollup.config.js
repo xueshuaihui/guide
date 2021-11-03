@@ -10,6 +10,7 @@ import progress from 'rollup-plugin-progress'
 import filesize from 'rollup-plugin-filesize'
 import { terser } from 'rollup-plugin-terser'
 import cssnano from 'cssnano'
+import bundleScss from 'rollup-plugin-bundle-scss'
 
 // import sass from 'rollup-plugin-sass'
 
@@ -45,6 +46,7 @@ export default [
 			format: 'es',
 		},
 		plugins: [
+			bundleScss({ exclusive: false }),
 			postcss({
 				extract: true,
 				plugins: postCSSPlugins,
