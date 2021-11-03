@@ -1,6 +1,10 @@
 import options from '../options/step'
 import { setStyle } from '../tools/tools'
-import { createHelperLayer, createTooltip } from '../core/createElement'
+import {
+	createHelperLayer,
+	createTooltip,
+	setGuideContainer,
+} from '../core/createElement'
 /**
  * Step类，代表一个步骤.
  * @constructor
@@ -10,7 +14,6 @@ export default class Step {
 	constructor(customOptions, guide) {
 		this.el = null
 		this.target = null
-		this.content = null
 		this.guide = guide
 		this.setOptions(options)
 		this.setOptions(customOptions)
@@ -94,11 +97,12 @@ export default class Step {
 	_createToolTip() {
 		const toolTipStyle = this._getDomStyle('toolTipStyle')
 		if (!this.guide.toolTip) {
-			this.guide.toolTip = createTooltip(toolTipStyle)
+			this.guide.toolTip = createTooltip.apply(this, [toolTipStyle])
 			this.body.appendChild(this.guide.toolTip)
 		} else {
 			setStyle(this.guide.toolTip, toolTipStyle)
 		}
+		setGuideContainer.apply(this)
 	}
 	_removeToolTip() {
 		this.guide.toolTip?.remove()

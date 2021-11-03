@@ -44,6 +44,7 @@ export default [
 		output: {
 			file: `${outputPath}/${name}.css`,
 			format: 'es',
+			banner,
 		},
 		plugins: [
 			bundleScss({ exclusive: false }),
@@ -58,6 +59,7 @@ export default [
 		output: {
 			file: `${outputPath}/${name}.min.css`,
 			format: 'es',
+			banner,
 		},
 		plugins: [
 			postcss({

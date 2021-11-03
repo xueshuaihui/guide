@@ -16,7 +16,11 @@ export default {
 			'/': [
 				{
 					el: '.test1',
-					content: 'test',
+					content: {
+						image: '',
+						title: '分享项目',
+						text: '分享链接给同事，邀请同事发表意见',
+					},
 					width: 410,
 					height: 198,
 				},

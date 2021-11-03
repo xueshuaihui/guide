@@ -7,6 +7,7 @@ export default {
 	skipclass: '',
 	doneLabel: '完成',
 	doneclass: '',
+	content: '',
 	confirmtipPosition: 'bottom',
 	confirmtipClass: '',
 	width: '',

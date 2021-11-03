@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Wed, 03 Nov 2021 09:33:39 GMT
+ * Date: Wed, 03 Nov 2021 09:36:13 GMT
  */
 
 (function (global, factory) {
@@ -52,6 +52,7 @@
 	  skipclass: '',
 	  doneLabel: '完成',
 	  doneclass: '',
+	  content: '',
 	  confirmtipPosition: 'bottom',
 	  confirmtipClass: '',
 	  width: '',
@@ -124,6 +125,16 @@
 	  return element;
 	};
 
+	const toolTip = `
+    <div class="guide-image">
+        <img src="{{image}}" alt="" />
+    </div>
+    <div class="guide-message">
+        <h3>{{title}}</h3>
+        <p>{{text}}</p>
+    </div>
+`;
+
 	const createOverlayer = style => {
 	  let attr = {
 	    style: style
@@ -139,30 +150,39 @@
 	  attr.class = 'guide-helperLayer';
 	  return createElement('div', attr);
 	};
-	const createTooltip = style => {
+	const createTooltip = function (style) {
 	  let attr = {
 	    style: style
 	  };
 	  attr.class = 'guide-tooltip';
 	  const dom = createElement('div', attr);
-	  dom.innerHTML = `
-    <div class="guide-container">
-        <div class="guide-image">
-            <img src="" alt="" />
-        </div>
-        <div class="guide-message">
-            <h4>创建批注</h4>
-            <p>在设计图上 单击 或 拖拽 绘制 快捷键</p>
-        </div>
-    </div>
+	  let htmlString = `
+    <div class="guide-container"></div>
     <div class="guide-button-box">
-        <div class="guide-button guide-skip-button">跳过</div>
-        <div class="guide-button guide-prev-button">上一步</div>
         <div class="guide-button guide-next-button">继续探索</div>
+        <div class="guide-button guide-prev-button">上一步</div>
+        <div class="guide-button guide-skip-button">跳过</div>
         <div class="guide-button guide-done-button">知道啦</div>
     </div>
-     `;
+    `;
+	  dom.innerHTML = htmlString;
 	  return dom;
+	};
+	const setGuideContainer = function () {
+	  let htmlString;
+	  const type = TypeOf(this.content);
+
+	  if (type === 'string') {
+	    htmlString = this.content;
+	  } else if (type === 'object') {
+	    htmlString = toolTip.replace(/{{[\w\W][^{{][^}}]*}}/g, code => {
+	      const key = code.slice(2, -2);
+	      return this.content[key] || '';
+	    });
+	  }
+
+	  const container = this.guide.toolTip.querySelector('.guide-container');
+	  container.innerHTML = htmlString;
 	};
 
 	/**
@@ -175,7 +195,6 @@
 	  constructor(customOptions, guide) {
 	    this.el = null;
 	    this.target = null;
-	    this.content = null;
 	    this.guide = guide;
 	    this.setOptions(options);
 	    this.setOptions(customOptions);
@@ -278,11 +297,13 @@
 	    const toolTipStyle = this._getDomStyle('toolTipStyle');
 
 	    if (!this.guide.toolTip) {
-	      this.guide.toolTip = createTooltip(toolTipStyle);
+	      this.guide.toolTip = createTooltip.apply(this, [toolTipStyle]);
 	      this.body.appendChild(this.guide.toolTip);
 	    } else {
 	      setStyle(this.guide.toolTip, toolTipStyle);
 	    }
+
+	    setGuideContainer.apply(this);
 	  }
 
 	  _removeToolTip() {
@@ -619,7 +640,6 @@
 	    this.goToStepNumber(0);
 	    buttonAddEventListener.apply(this);
 	    addWindowResizeListener.apply(this);
-	    console.log(this);
 	    return this;
 	  }
 

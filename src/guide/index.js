@@ -134,7 +134,6 @@ export default class Guide {
 		this.goToStepNumber(0)
 		buttonAddEventListener.apply(this)
 		addWindowResizeListener.apply(this)
-		console.log(this)
 		return this
 	}
 	exit() {
