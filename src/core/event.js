@@ -35,7 +35,7 @@ export const buttonRemoveEventListener = function () {
  * 屏幕resize 事件
  */
 const _resizeCB = function () {
-	this.currentStep.create()
+	this.currentStep?.create()
 }
 export const addWindowResizeListener = function () {
 	window.addEventListener('resize', _resizeCB.bind(this))
@@ -78,11 +78,33 @@ export const stepChange = function () {
 		done?.classList.add('hide')
 	}
 }
+const resolvePath = (location) => {
+	let path
+	const { hash, pathname } = window.location
+	if (hash) {
+		const lastIndex = hash.indexOf('?')
+		lastIndex > 0
+			? (path = hash.slice(1, lastIndex))
+			: (path = hash.slice(1))
+	} else if (pathname) {
+		const lastIndex = hash.indexOf('?')
+		lastIndex > 0
+			? (path = pathname.slice(0, lastIndex))
+			: (path = pathname.slice(0))
+	} else {
+		path = ''
+	}
+	return path
+}
 const _locationEventCB = function (...argus) {
 	// const arguments = argus[0].arguments
-	const path = argus[0].arguments[2]
+	// const path = argus[0].arguments[2]
+	const path = resolvePath()
 	const steps = this.allSteps ? this.allSteps[path] : null
-	this.setSteps(steps).start()
+
+	setTimeout(() => {
+		this.setSteps(steps).start()
+	}, 80)
 }
 /**
  * 监听前端路由发生改变
@@ -107,6 +129,8 @@ export const locationAddEventListener = function () {
 	window.addEventListener('popstate', _locationEventCB.bind(this))
 	window.addEventListener('pushState', _locationEventCB.bind(this))
 	window.addEventListener('replaceState', _locationEventCB.bind(this))
+
+	_locationEventCB.apply(this)
 }
 /**
  * 移除路由监听事件

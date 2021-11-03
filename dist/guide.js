@@ -147,20 +147,20 @@
 	  const dom = createElement('div', attr);
 	  dom.innerHTML = `
     <div class="guide-container">
-    <div class="guide-image">
-        <img src="" alt="" />
+        <div class="guide-image">
+            <img src="" alt="" />
+        </div>
+        <div class="guide-message">
+            <h4>创建批注</h4>
+            <p>在设计图上 单击 或 拖拽 绘制 快捷键</p>
+        </div>
     </div>
-    <div class="guide-message">
-        <h4>创建批注</h4>
-        <p>在设计图上 单击 或 拖拽 绘制 快捷键</p>
+    <div class="guide-button-box">
+        <div class="guide-button guide-skip-button">跳过</div>
+        <div class="guide-button guide-prev-button">上一步</div>
+        <div class="guide-button guide-next-button">继续探索</div>
+        <div class="guide-button guide-done-button">知道啦</div>
     </div>
-</div>
-<div class="guide-button-box">
-    <div class="guide-button guide-next-button">继续探索</div>
-    <div class="guide-button guide-prev-button">上一步</div>
-    <div class="guide-button guide-skip-button">跳过</div>
-    <div class="guide-button guide-done-button">知道啦</div>
-</div>
      `;
 	  return dom;
 	};
@@ -336,7 +336,7 @@
 	 */
 
 	const _resizeCB = function () {
-	  this.currentStep.create();
+	  this.currentStep?.create();
 	};
 
 	const addWindowResizeListener = function () {
@@ -391,11 +391,34 @@
 	  }
 	};
 
+	const resolvePath = location => {
+	  let path;
+	  const {
+	    hash,
+	    pathname
+	  } = window.location;
+
+	  if (hash) {
+	    const lastIndex = hash.indexOf('?');
+	    lastIndex > 0 ? path = hash.slice(1, lastIndex) : path = hash.slice(1);
+	  } else if (pathname) {
+	    const lastIndex = hash.indexOf('?');
+	    lastIndex > 0 ? path = pathname.slice(0, lastIndex) : path = pathname.slice(0);
+	  } else {
+	    path = '';
+	  }
+
+	  return path;
+	};
+
 	const _locationEventCB = function (...argus) {
 	  // const arguments = argus[0].arguments
-	  const path = argus[0].arguments[2];
+	  // const path = argus[0].arguments[2]
+	  const path = resolvePath();
 	  const steps = this.allSteps ? this.allSteps[path] : null;
-	  this.setSteps(steps).start();
+	  setTimeout(() => {
+	    this.setSteps(steps).start();
+	  }, 80);
 	};
 	/**
 	 * 监听前端路由发生改变
@@ -423,6 +446,8 @@
 	  window.addEventListener('popstate', _locationEventCB.bind(this));
 	  window.addEventListener('pushState', _locationEventCB.bind(this));
 	  window.addEventListener('replaceState', _locationEventCB.bind(this));
+
+	  _locationEventCB.apply(this);
 	};
 	/**
 	 * 移除路由监听事件
