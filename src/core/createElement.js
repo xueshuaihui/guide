@@ -9,31 +9,28 @@ export const createOverlayer = (style) => {
 	const element = createElement('div', attr)
 	return element
 }
-export const createHelperLayer = (style) => {
+export const createHelperLayer = function (style) {
 	let attr = {
 		style: style,
 	}
 	attr.class = 'guide-helperLayer'
-	return createElement('div', attr)
-}
-export const createTooltip = function (style) {
-	let attr = {
-		style: style,
-	}
-	attr.class = 'guide-tooltip'
-	const dom = createElement('div', attr)
-	let htmlString = `
-    <div class="guide-container"></div>
-    <div class="guide-button-box">
-        <div class="guide-button guide-next-button">继续探索</div>
-        <div class="guide-button guide-prev-button">上一步</div>
-        <div class="guide-button guide-skip-button">跳过</div>
-        <div class="guide-button guide-done-button">知道啦</div>
+	const helperLayer = createElement('div', attr)
+	helperLayer.innerHTML = `
+    <div class="guide-tooltip  ${this.joints}" style="">
+        <div class="guide-joints">
+        </div>
+        <div class="guide-tooltip-main">
+            <div class="guide-container"></div>
+            <div class="guide-button-box">
+                <div class="guide-button guide-next-button ${this.guide.nextclass}">${this.guide.nextLabel}</div>
+                <div class="guide-button guide-prev-button ${this.guide.prevclass}">${this.guide.prevLabel}</div>
+                <div class="guide-button guide-skip-button ${this.guide.skipclass}">${this.guide.skipLabel}</div>
+                <div class="guide-button guide-done-button ${this.guide.doneclass}">${this.guide.doneLabel}</div>
+            </div>
+        </div>
     </div>
     `
-	dom.innerHTML = htmlString
-
-	return dom
+	return helperLayer
 }
 export const setGuideContainer = function () {
 	let htmlString

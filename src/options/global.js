@@ -27,4 +27,7 @@ export default {
 	animation: false,
 	// 触发键盘“esc”时，是否退出引导流程
 	exitOnEsc: false,
+	// 宽高
+	width: 200,
+	height: 200,
 }

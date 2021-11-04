@@ -2,7 +2,7 @@ import options from '../options/step'
 import { setStyle } from '../tools/tools'
 import {
 	createHelperLayer,
-	createTooltip,
+	// createTooltip,
 	setGuideContainer,
 } from '../core/createElement'
 /**
@@ -46,66 +46,46 @@ export default class Step {
 		}
 
 		this._createHelperLayer()
-		this._createToolTip()
 	}
 	destory() {
 		this._removeToolTip()
 		this._removeHelperLayer()
 	}
-	_getDomStyle(type) {
+	_createHelperLayer() {
 		this.body = document.getElementsByTagName('body')[0]
 		// 辅助层
-		const currentStep = this.guide.currentStep
-		const { width, height, top, left } =
-			currentStep.target.getBoundingClientRect()
-		const offsetTop = Number(currentStep.offsetTop)
-		const offsetLeft = Number(currentStep.offsetLeft)
+		const { width, height, top, left } = this.target.getBoundingClientRect()
+
 		const helperLayerStryle = {
 			width: width + 'px',
 			height: height + 'px',
 			top: top + 'px',
 			left: left + 'px',
 		}
-		const toolTipStyle = {
-			width: currentStep.width + 'px',
-			height: currentStep.height + 'px',
-			top: height + top + offsetTop + 'px',
-			left: left + offsetLeft + 'px',
-		}
-		switch (type) {
-			case 'helperLayerStryle':
-				return helperLayerStryle
-			case 'toolTipStyle':
-				return toolTipStyle
-			default:
-				break
-		}
-	}
-	_createHelperLayer() {
-		const helperLayerStryle = this._getDomStyle('helperLayerStryle')
 		if (!this.guide.helperLayer) {
-			this.guide.helperLayer = createHelperLayer(helperLayerStryle)
+			this.guide.helperLayer = createHelperLayer.apply(this, [
+				helperLayerStryle,
+			])
 			this.body.appendChild(this.guide.helperLayer)
+			this.guide.toolTip =
+				this.guide.helperLayer.querySelector('.guide-tooltip')
 		} else {
+			// 设置HelperLayer 样式
 			setStyle(this.guide.helperLayer, helperLayerStryle)
 		}
-	}
-	_removeHelperLayer() {
-		this.guide.helperLayer?.remove()
-		this.guide.helperLayer = null
-	}
-	_createToolTip() {
-		const toolTipStyle = this._getDomStyle('toolTipStyle')
-		if (!this.guide.toolTip) {
-			this.guide.toolTip = createTooltip.apply(this, [toolTipStyle])
-			this.body.appendChild(this.guide.toolTip)
-		} else {
-			setStyle(this.guide.toolTip, toolTipStyle)
-		}
+		// 设置tooltip大小
+		setStyle(this.guide.toolTip.querySelector('.guide-tooltip-main'), {
+			width: `${this.width}px`,
+			height: `${this.height}px`,
+		})
+		// 更新文本
 		setGuideContainer.apply(this)
 	}
-	_removeToolTip() {
-		this.guide.toolTip?.remove()
-		this.guide.toolTip = null
+	_removeHelperLayer() {
+		if (this.guide.helperLayer) {
+			this.guide.helperLayer.remove()
+			this.guide.helperLayer = null
+			this.guide.toolTip = null
+		}
 	}
 }

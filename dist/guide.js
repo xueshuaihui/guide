@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Wed, 03 Nov 2021 09:36:13 GMT
+ * Date: Thu, 04 Nov 2021 02:19:36 GMT
  */
 
 (function (global, factory) {
@@ -40,7 +40,10 @@
 	  // 开启动画
 	  animation: false,
 	  // 触发键盘“esc”时，是否退出引导流程
-	  exitOnEsc: false
+	  exitOnEsc: false,
+	  // 宽高
+	  width: 200,
+	  height: 200
 	};
 
 	var options = {
@@ -58,7 +61,9 @@
 	  width: '',
 	  height: '',
 	  offsetTop: '20',
-	  offsetLeft: '0'
+	  offsetLeft: '0',
+	  joints: 'top' // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
+
 	};
 
 	/**
@@ -143,30 +148,28 @@
 	  const element = createElement('div', attr);
 	  return element;
 	};
-	const createHelperLayer = style => {
+	const createHelperLayer = function (style) {
 	  let attr = {
 	    style: style
 	  };
 	  attr.class = 'guide-helperLayer';
-	  return createElement('div', attr);
-	};
-	const createTooltip = function (style) {
-	  let attr = {
-	    style: style
-	  };
-	  attr.class = 'guide-tooltip';
-	  const dom = createElement('div', attr);
-	  let htmlString = `
-    <div class="guide-container"></div>
-    <div class="guide-button-box">
-        <div class="guide-button guide-next-button">继续探索</div>
-        <div class="guide-button guide-prev-button">上一步</div>
-        <div class="guide-button guide-skip-button">跳过</div>
-        <div class="guide-button guide-done-button">知道啦</div>
+	  const helperLayer = createElement('div', attr);
+	  helperLayer.innerHTML = `
+    <div class="guide-tooltip  ${this.joints}" style="">
+        <div class="guide-joints">
+        </div>
+        <div class="guide-tooltip-main">
+            <div class="guide-container"></div>
+            <div class="guide-button-box">
+                <div class="guide-button guide-next-button ${this.guide.nextclass}">${this.guide.nextLabel}</div>
+                <div class="guide-button guide-prev-button ${this.guide.prevclass}">${this.guide.prevLabel}</div>
+                <div class="guide-button guide-skip-button ${this.guide.skipclass}">${this.guide.skipLabel}</div>
+                <div class="guide-button guide-done-button ${this.guide.doneclass}">${this.guide.doneLabel}</div>
+            </div>
+        </div>
     </div>
     `;
-	  dom.innerHTML = htmlString;
-	  return dom;
+	  return helperLayer;
 	};
 	const setGuideContainer = function () {
 	  let htmlString;
@@ -233,8 +236,6 @@
 	    }
 
 	    this._createHelperLayer();
-
-	    this._createToolTip();
 	  }
 
 	  destory() {
@@ -243,72 +244,46 @@
 	    this._removeHelperLayer();
 	  }
 
-	  _getDomStyle(type) {
+	  _createHelperLayer() {
 	    this.body = document.getElementsByTagName('body')[0]; // 辅助层
 
-	    const currentStep = this.guide.currentStep;
 	    const {
 	      width,
 	      height,
 	      top,
 	      left
-	    } = currentStep.target.getBoundingClientRect();
-	    const offsetTop = Number(currentStep.offsetTop);
-	    const offsetLeft = Number(currentStep.offsetLeft);
+	    } = this.target.getBoundingClientRect();
 	    const helperLayerStryle = {
 	      width: width + 'px',
 	      height: height + 'px',
 	      top: top + 'px',
 	      left: left + 'px'
 	    };
-	    const toolTipStyle = {
-	      width: currentStep.width + 'px',
-	      height: currentStep.height + 'px',
-	      top: height + top + offsetTop + 'px',
-	      left: left + offsetLeft + 'px'
-	    };
-
-	    switch (type) {
-	      case 'helperLayerStryle':
-	        return helperLayerStryle;
-
-	      case 'toolTipStyle':
-	        return toolTipStyle;
-	    }
-	  }
-
-	  _createHelperLayer() {
-	    const helperLayerStryle = this._getDomStyle('helperLayerStryle');
 
 	    if (!this.guide.helperLayer) {
-	      this.guide.helperLayer = createHelperLayer(helperLayerStryle);
+	      this.guide.helperLayer = createHelperLayer.apply(this, [helperLayerStryle]);
 	      this.body.appendChild(this.guide.helperLayer);
+	      this.guide.toolTip = this.guide.helperLayer.querySelector('.guide-tooltip');
 	    } else {
+	      // 设置HelperLayer 样式
 	      setStyle(this.guide.helperLayer, helperLayerStryle);
-	    }
-	  }
+	    } // 设置tooltip大小
 
-	  _removeHelperLayer() {
-	    this.guide.helperLayer?.remove();
-	    this.guide.helperLayer = null;
-	  }
 
-	  _createToolTip() {
-	    const toolTipStyle = this._getDomStyle('toolTipStyle');
-
-	    if (!this.guide.toolTip) {
-	      this.guide.toolTip = createTooltip.apply(this, [toolTipStyle]);
-	      this.body.appendChild(this.guide.toolTip);
-	    } else {
-	      setStyle(this.guide.toolTip, toolTipStyle);
-	    }
+	    setStyle(this.guide.toolTip.querySelector('.guide-tooltip-main'), {
+	      width: `${this.width}px`,
+	      height: `${this.height}px`
+	    }); // 更新文本
 
 	    setGuideContainer.apply(this);
 	  }
 
-	  _removeToolTip() {
-	    this.guide.toolTip?.remove();
-	    this.guide.toolTip = null;
+	  _removeHelperLayer() {
+	    if (this.guide.helperLayer) {
+	      this.guide.helperLayer.remove();
+	      this.guide.helperLayer = null;
+	      this.guide.toolTip = null;
+	    }
 	  }
 
 	}

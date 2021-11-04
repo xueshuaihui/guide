@@ -21,26 +21,30 @@ export default {
 						title: '分享项目',
 						text: '分享链接给同事，邀请同事发表意见',
 					},
-					width: 410,
-					height: 198,
+					width: 180,
+					height: 498,
+					joints: 'left-top',
 				},
 				{
 					el: '.test2',
-					content: 'test',
-					width: 410,
+					content: '<i>测试标签</i><p>tgvhbl</p>',
+					width: 110,
 					height: 198,
+					joints: 'top',
 				},
 				{
 					el: '.test3',
 					content: 'test',
-					width: 410,
+					width: 310,
 					height: 198,
+					joints: 'top',
 				},
 				{
 					el: '.test4',
 					content: 'test',
-					width: 410,
+					width: 110,
 					height: 198,
+					joints: 'top',
 				},
 			],
 			'/about': [
@@ -64,6 +68,8 @@ export default {
 				},
 			],
 		})
+
+		console.log(guide)
 		// setTimeout(() => {
 		// 	guide.exit()
 		// }, 5000)
