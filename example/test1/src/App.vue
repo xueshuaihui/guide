@@ -44,7 +44,7 @@ export default {
 					content: 'test',
 					width: 110,
 					height: 198,
-					joints: 'top',
+					joints: 'bottom',
 				},
 			],
 			'/about': [

@@ -16,7 +16,7 @@ export const createHelperLayer = function (style) {
 	attr.class = 'guide-helperLayer'
 	const helperLayer = createElement('div', attr)
 	helperLayer.innerHTML = `
-    <div class="guide-tooltip  ${this.joints}" style="">
+    <div class="guide-tooltip ${this.joints}" style="">
         <div class="guide-joints">
         </div>
         <div class="guide-tooltip-main">
@@ -33,6 +33,19 @@ export const createHelperLayer = function (style) {
 	return helperLayer
 }
 export const setGuideContainer = function () {
+	// 更新guide-tooltip class
+	console.log(this.guide.toolTip.className.split('guide-tooltip'))
+	const removeClassName = this.guide.toolTip.className.split('guide-tooltip')
+	removeClassName.forEach((item) => {
+		if (item.length > 0) {
+			this.guide.toolTip.classList.remove(
+				item.replace(/(^\s*)|(\s*$)/g, '')
+			)
+		}
+	})
+	this.guide.toolTip.classList.add(this.joints)
+	// 更新buttons
+	// 更新内容
 	let htmlString
 	const type = TypeOf(this.content)
 	if (type === 'string') {

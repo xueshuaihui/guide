@@ -48,7 +48,6 @@ export default class Step {
 		this._createHelperLayer()
 	}
 	destory() {
-		this._removeToolTip()
 		this._removeHelperLayer()
 	}
 	_createHelperLayer() {

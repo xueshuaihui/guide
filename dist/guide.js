@@ -47,21 +47,21 @@
 	};
 
 	var options = {
-	  nextLabel: '下一步',
-	  nextclass: '',
-	  prevLabel: '上一步',
-	  prevclass: '',
-	  skipLabel: '跳过',
-	  skipclass: '',
-	  doneLabel: '完成',
-	  doneclass: '',
+	  // nextLabel: '下一步',
+	  // nextclass: '',
+	  // prevLabel: '上一步',
+	  // prevclass: '',
+	  // skipLabel: '跳过',
+	  // skipclass: '',
+	  // doneLabel: '完成',
+	  // doneclass: '',
 	  content: '',
 	  confirmtipPosition: 'bottom',
 	  confirmtipClass: '',
 	  width: '',
 	  height: '',
-	  offsetTop: '20',
-	  offsetLeft: '0',
+	  // offsetTop: '20',
+	  // offsetLeft: '0',
 	  joints: 'top' // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
 
 	};
@@ -155,7 +155,7 @@
 	  attr.class = 'guide-helperLayer';
 	  const helperLayer = createElement('div', attr);
 	  helperLayer.innerHTML = `
-    <div class="guide-tooltip  ${this.joints}" style="">
+    <div class="guide-tooltip ${this.joints}" style="">
         <div class="guide-joints">
         </div>
         <div class="guide-tooltip-main">
@@ -172,6 +172,17 @@
 	  return helperLayer;
 	};
 	const setGuideContainer = function () {
+	  // 更新guide-tooltip class
+	  console.log(this.guide.toolTip.className.split('guide-tooltip'));
+	  const removeClassName = this.guide.toolTip.className.split('guide-tooltip');
+	  removeClassName.forEach(item => {
+	    if (item.length > 0) {
+	      this.guide.toolTip.classList.remove(item.replace(/(^\s*)|(\s*$)/g, ''));
+	    }
+	  });
+	  this.guide.toolTip.classList.add(this.joints); // 更新buttons
+	  // 更新内容
+
 	  let htmlString;
 	  const type = TypeOf(this.content);
 
@@ -239,8 +250,6 @@
 	  }
 
 	  destory() {
-	    this._removeToolTip();
-
 	    this._removeHelperLayer();
 	  }
 
