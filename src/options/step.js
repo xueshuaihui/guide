@@ -14,5 +14,6 @@ export default {
 	height: '',
 	// offsetTop: '20',
 	// offsetLeft: '0',
+	followType: 'follow', // follow     full
 	joints: 'top', // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
 }

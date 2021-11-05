@@ -39,10 +39,16 @@ export default class Step {
 	}
 	create() {
 		const el = this.el
-		this.target = document.querySelector(el)
-		if (!this.target) {
-			console.error(`未找到${this.el}元素`)
-			return
+		// body null
+		if (el === 'body' || !el) {
+			this.target = document.querySelector('body')
+			this.followType = 'full'
+		} else {
+			this.target = document.querySelector(el)
+			if (!this.target) {
+				console.error(`未找到${this.el}元素`)
+				return
+			}
 		}
 
 		this._createHelperLayer()
@@ -53,15 +59,24 @@ export default class Step {
 	_createHelperLayer() {
 		this.body = document.getElementsByTagName('body')[0]
 		// 辅助层
-		const { width, height, top, left } = this.target.getBoundingClientRect()
-
+		let Bound = this.target.getBoundingClientRect()
+		if (this.followType === 'full') {
+			Bound = {
+				width: 0,
+				height: 0,
+				top: '50%',
+				left: '50%',
+			}
+		}
+		const { width, height, top, left } = Bound
 		const helperLayerStryle = {
-			width: width + 'px',
-			height: height + 'px',
-			top: top + 'px',
-			left: left + 'px',
+			width: width,
+			height: height,
+			top: top,
+			left: left,
 		}
 		if (!this.guide.helperLayer) {
+			// 不存在 创建
 			this.guide.helperLayer = createHelperLayer.apply(this, [
 				helperLayerStryle,
 			])
@@ -69,13 +84,13 @@ export default class Step {
 			this.guide.toolTip =
 				this.guide.helperLayer.querySelector('.guide-tooltip')
 		} else {
-			// 设置HelperLayer 样式
+			// 存在 设置HelperLayer 样式
 			setStyle(this.guide.helperLayer, helperLayerStryle)
 		}
 		// 设置tooltip大小
 		setStyle(this.guide.toolTip.querySelector('.guide-tooltip-main'), {
-			width: `${this.width}px`,
-			height: `${this.height}px`,
+			width: this.width,
+			height: this.height,
 		})
 		// 更新文本
 		setGuideContainer.apply(this)

@@ -16,6 +16,7 @@ $tip-padding: 24px;
 		}
 	}
 	.guide-joints {
+		display: block;
 		transform: rotate(0deg);
 	}
 }
@@ -35,6 +36,7 @@ $tip-padding: 24px;
 		}
 	}
 	.guide-joints {
+		display: block;
 		transform: rotate(180deg);
 	}
 }
@@ -54,6 +56,7 @@ $tip-padding: 24px;
 		}
 	}
 	.guide-joints {
+		display: block;
 		transform: rotate(-90deg);
 	}
 }
@@ -73,6 +76,7 @@ $tip-padding: 24px;
 		}
 	}
 	.guide-joints {
+		display: block;
 		transform: rotate(90deg);
 	}
 }
@@ -108,7 +112,11 @@ $tip-padding: 24px;
 	justify-content: flex-start;
 	align-items: center;
 	transform-origin: center center;
+	transform: translate(-50%, -50%);
+	&.center {
+	}
 	.guide-joints {
+		display: none;
 		border-style: solid;
 		border-width: 0 10px 20px 10px;
 		border-color: transparent transparent#ffffff transparent;

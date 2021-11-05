@@ -14,6 +14,7 @@ export const TypeOf = (data) => {
 		})
 }
 
+const unitAttr = ['width', 'height', 'left', 'right', 'top', 'bottom'] // 设置样式时， 需要将数字转换为 number+px 的属性
 /**
  * 设置行内样式
  *
@@ -33,7 +34,11 @@ export const setStyle = (element, style) => {
 		cssText += style
 	} else {
 		Object.keys(style).forEach((rule) => {
-			cssText += `${rule}:${style[rule]};`
+			if (unitAttr.indexOf(rule) >= 0 && !isNaN(style[rule])) {
+				cssText += `${rule}:${style[rule]}px;`
+			} else {
+				cssText += `${rule}:${style[rule]};`
+			}
 		})
 	}
 

@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Thu, 04 Nov 2021 02:19:36 GMT
+ * Date: Fri, 05 Nov 2021 03:05:11 GMT
  */
 
 (function (global, factory) {
@@ -62,6 +62,8 @@
 	  height: '',
 	  // offsetTop: '20',
 	  // offsetLeft: '0',
+	  followType: 'follow',
+	  // follow     full
 	  joints: 'top' // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
 
 	};
@@ -78,6 +80,8 @@
 	    return a.toLowerCase();
 	  });
 	};
+	const unitAttr = ['width', 'height', 'left', 'right', 'top', 'bottom']; // 设置样式时， 需要将数字转换为 number+px 的属性
+
 	/**
 	 * 设置行内样式
 	 *
@@ -98,7 +102,11 @@
 	    cssText += style;
 	  } else {
 	    Object.keys(style).forEach(rule => {
-	      cssText += `${rule}:${style[rule]};`;
+	      if (unitAttr.indexOf(rule) >= 0 && !isNaN(style[rule])) {
+	        cssText += `${rule}:${style[rule]}px;`;
+	      } else {
+	        cssText += `${rule}:${style[rule]};`;
+	      }
 	    });
 	  }
 
@@ -173,15 +181,18 @@
 	};
 	const setGuideContainer = function () {
 	  // 更新guide-tooltip class
-	  console.log(this.guide.toolTip.className.split('guide-tooltip'));
 	  const removeClassName = this.guide.toolTip.className.split('guide-tooltip');
 	  removeClassName.forEach(item => {
 	    if (item.length > 0) {
 	      this.guide.toolTip.classList.remove(item.replace(/(^\s*)|(\s*$)/g, ''));
 	    }
 	  });
-	  this.guide.toolTip.classList.add(this.joints); // 更新buttons
+
+	  if (this.followType !== 'full') {
+	    this.guide.toolTip.classList.add(this.joints);
+	  } // 更新buttons
 	  // 更新内容
+
 
 	  let htmlString;
 	  const type = TypeOf(this.content);
@@ -238,12 +249,18 @@
 	  }
 
 	  create() {
-	    const el = this.el;
-	    this.target = document.querySelector(el);
+	    const el = this.el; // body null
 
-	    if (!this.target) {
-	      console.error(`未找到${this.el}元素`);
-	      return;
+	    if (el === 'body' || !el) {
+	      this.target = document.querySelector('body');
+	      this.followType = 'full';
+	    } else {
+	      this.target = document.querySelector(el);
+
+	      if (!this.target) {
+	        console.error(`未找到${this.el}元素`);
+	        return;
+	      }
 	    }
 
 	    this._createHelperLayer();
@@ -256,32 +273,44 @@
 	  _createHelperLayer() {
 	    this.body = document.getElementsByTagName('body')[0]; // 辅助层
 
+	    let Bound = this.target.getBoundingClientRect();
+
+	    if (this.followType === 'full') {
+	      Bound = {
+	        width: 0,
+	        height: 0,
+	        top: '50%',
+	        left: '50%'
+	      };
+	    }
+
 	    const {
 	      width,
 	      height,
 	      top,
 	      left
-	    } = this.target.getBoundingClientRect();
+	    } = Bound;
 	    const helperLayerStryle = {
-	      width: width + 'px',
-	      height: height + 'px',
-	      top: top + 'px',
-	      left: left + 'px'
+	      width: width,
+	      height: height,
+	      top: top,
+	      left: left
 	    };
 
 	    if (!this.guide.helperLayer) {
+	      // 不存在 创建
 	      this.guide.helperLayer = createHelperLayer.apply(this, [helperLayerStryle]);
 	      this.body.appendChild(this.guide.helperLayer);
 	      this.guide.toolTip = this.guide.helperLayer.querySelector('.guide-tooltip');
 	    } else {
-	      // 设置HelperLayer 样式
+	      // 存在 设置HelperLayer 样式
 	      setStyle(this.guide.helperLayer, helperLayerStryle);
 	    } // 设置tooltip大小
 
 
 	    setStyle(this.guide.toolTip.querySelector('.guide-tooltip-main'), {
-	      width: `${this.width}px`,
-	      height: `${this.height}px`
+	      width: this.width,
+	      height: this.height
 	    }); // 更新文本
 
 	    setGuideContainer.apply(this);

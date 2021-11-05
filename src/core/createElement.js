@@ -34,7 +34,6 @@ export const createHelperLayer = function (style) {
 }
 export const setGuideContainer = function () {
 	// 更新guide-tooltip class
-	console.log(this.guide.toolTip.className.split('guide-tooltip'))
 	const removeClassName = this.guide.toolTip.className.split('guide-tooltip')
 	removeClassName.forEach((item) => {
 		if (item.length > 0) {
@@ -43,7 +42,10 @@ export const setGuideContainer = function () {
 			)
 		}
 	})
-	this.guide.toolTip.classList.add(this.joints)
+	if (this.followType !== 'full') {
+		this.guide.toolTip.classList.add(this.joints)
+	}
+
 	// 更新buttons
 	// 更新内容
 	let htmlString

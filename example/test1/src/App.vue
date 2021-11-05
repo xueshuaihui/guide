@@ -15,7 +15,7 @@ export default {
 		const guide = new Guide({}).addAllSteps({
 			'/': [
 				{
-					el: '.test1',
+					// el: 'body',
 					content: {
 						image: '',
 						title: '分享项目',
@@ -23,7 +23,7 @@ export default {
 					},
 					width: 180,
 					height: 498,
-					joints: 'left-top',
+					joints: 'left',
 				},
 				{
 					el: '.test2',
