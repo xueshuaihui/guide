@@ -6,7 +6,6 @@ import {
 	addWindowResizeListener,
 	removeWindowResizeListener,
 	stepChange,
-	locationAddEventListener,
 	locationRemoveEventListener,
 	buttonAddEventListener,
 	buttonRemoveEventListener,
@@ -93,7 +92,7 @@ export default class Guide {
 	addAllSteps(allSteps) {
 		if (TypeOf(allSteps) !== 'object') return
 		this.allSteps = allSteps
-		locationAddEventListener.apply(this)
+		// locationAddEventListener.apply(this) // 路由监听
 		return this
 	}
 	goToStep(step) {
@@ -129,7 +128,12 @@ export default class Guide {
 		this.exit()
 	}
 	getcurrentstep() {}
-	start() {
+	start(code) {
+		if (code) {
+			const steps = this.allSteps[code]
+			steps && this.setSteps(steps)
+		}
+		console.log(this.steps)
 		if (!this.steps || this.steps?.length === 0) return
 		this.goToStepNumber(0)
 		buttonAddEventListener.apply(this)

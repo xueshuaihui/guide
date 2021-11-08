@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Mon, 08 Nov 2021 02:15:44 GMT
+ * Date: Mon, 08 Nov 2021 10:11:35 GMT
  */
 
 (function (global, factory) {
@@ -56,16 +56,15 @@
 	  // doneLabel: '完成',
 	  // doneclass: '',
 	  content: '',
-	  confirmtipPosition: 'bottom',
-	  confirmtipClass: '',
 	  width: '',
 	  height: '',
 	  // offsetTop: '20',
 	  // offsetLeft: '0',
 	  followType: 'follow',
 	  // follow     full
-	  joints: 'top' // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
-
+	  joints: 'top',
+	  // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
+	  tipClass: 'animation'
 	};
 
 	/**
@@ -165,7 +164,7 @@
 	  attr.class = 'guide-helperLayer';
 	  const helperLayer = createElement('div', attr);
 	  helperLayer.innerHTML = `
-    <div class="guide-tooltip ${this.joints}" style="">
+    <div class="guide-tooltip ${this.joints} ${this.tipClass}" style="">
         <div class="guide-joints">
         </div>
         <div class="guide-tooltip-main">
@@ -183,10 +182,9 @@
 	};
 	const setGuideContainer = function () {
 	  // 更新guide-tooltip class
-	  const removeClassName = this.guide.toolTip.className.split('guide-tooltip');
-	  removeClassName.forEach(item => {
-	    if (item.length > 0) {
-	      this.guide.toolTip.classList.remove(item.replace(/(^\s*)|(\s*$)/g, ''));
+	  this.guide.toolTip.classList.forEach(key => {
+	    if (key !== 'guide-tooltip') {
+	      this.guide.toolTip.classList.remove(key);
 	    }
 	  });
 
@@ -406,8 +404,15 @@
 	    skip,
 	    done
 	  } = this.button;
+	  console.log(index, length, 0 < index < length - 1);
 
-	  if (index === 0) {
+	  if (index === 0 && index === length - 1) {
+	    // 起始
+	    next?.classList.add('hide');
+	    prev?.classList.add('hide');
+	    skip?.classList.add('hide');
+	    done?.classList.add('show');
+	  } else if (index === 0) {
 	    // 起始
 	    next?.classList.add('show');
 	    prev?.classList.add('hide');
@@ -455,35 +460,6 @@
 	  setTimeout(() => {
 	    this.setSteps(steps).start();
 	  }, 200);
-	};
-	/**
-	 * 监听前端路由发生改变
-	 * @param {function} callback 路由发生改变时的回调
-	 */
-
-
-	const locationAddEventListener = function () {
-	  locationRemoveEventListener();
-
-	  const _historyWrap = function (type) {
-	    const orig = history[type];
-	    const e = new Event(type);
-	    return function () {
-	      const rv = orig.apply(this, arguments);
-	      e.arguments = arguments;
-	      window.dispatchEvent(e);
-	      return rv;
-	    };
-	  };
-
-	  history.pushState = _historyWrap('pushState');
-	  history.replaceState = _historyWrap('replaceState');
-	  window.addEventListener('hashchange', _locationEventCB.bind(this));
-	  window.addEventListener('popstate', _locationEventCB.bind(this));
-	  window.addEventListener('pushState', _locationEventCB.bind(this));
-	  window.addEventListener('replaceState', _locationEventCB.bind(this));
-
-	  _locationEventCB.apply(this);
 	};
 	/**
 	 * 移除路由监听事件
@@ -600,8 +576,8 @@
 
 	  addAllSteps(allSteps) {
 	    if (TypeOf(allSteps) !== 'object') return;
-	    this.allSteps = allSteps;
-	    locationAddEventListener.apply(this);
+	    this.allSteps = allSteps; // locationAddEventListener.apply(this) // 路由监听
+
 	    return this;
 	  }
 
@@ -650,7 +626,13 @@
 
 	  getcurrentstep() {}
 
-	  start() {
+	  start(code) {
+	    if (code) {
+	      const steps = this.allSteps[code];
+	      steps && this.setSteps(steps);
+	    }
+
+	    console.log(this.steps);
 	    if (!this.steps || this.steps?.length === 0) return;
 	    this.goToStepNumber(0);
 	    buttonAddEventListener.apply(this);

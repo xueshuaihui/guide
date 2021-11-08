@@ -59,7 +59,14 @@ export const stepChange = function () {
 	const index = this.currentStepNumber
 	const length = steps.length
 	const { next, prev, skip, done } = this.button
-	if (index === 0) {
+	console.log(index, length, 0 < index < length - 1)
+	if (index === 0 && index === length - 1) {
+		// 起始
+		next?.classList.add('hide')
+		prev?.classList.add('hide')
+		skip?.classList.add('hide')
+		done?.classList.add('show')
+	} else if (index === 0) {
 		// 起始
 		next?.classList.add('show')
 		prev?.classList.add('hide')

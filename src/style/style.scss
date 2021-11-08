@@ -1,10 +1,14 @@
 $tip-padding: 24px;
-
+@import './animation.scss';
 @mixin joints-top {
 	flex-direction: column;
 	top: 100%;
 	left: 50%;
 	transform: translateX(-50%);
+	&.animation {
+		animation: bounce 0.8s ease-in-out 1s 3;
+	}
+
 	&.top-right {
 		.guide-tooltip-main {
 			transform: translateX(calc(-50% + 30px));

@@ -16,7 +16,7 @@ export const createHelperLayer = function (style) {
 	attr.class = 'guide-helperLayer'
 	const helperLayer = createElement('div', attr)
 	helperLayer.innerHTML = `
-    <div class="guide-tooltip ${this.joints}" style="">
+    <div class="guide-tooltip ${this.joints} ${this.tipClass}" style="">
         <div class="guide-joints">
         </div>
         <div class="guide-tooltip-main">
@@ -34,12 +34,9 @@ export const createHelperLayer = function (style) {
 }
 export const setGuideContainer = function () {
 	// 更新guide-tooltip class
-	const removeClassName = this.guide.toolTip.className.split('guide-tooltip')
-	removeClassName.forEach((item) => {
-		if (item.length > 0) {
-			this.guide.toolTip.classList.remove(
-				item.replace(/(^\s*)|(\s*$)/g, '')
-			)
+	this.guide.toolTip.classList.forEach((key) => {
+		if (key !== 'guide-tooltip') {
+			this.guide.toolTip.classList.remove(key)
 		}
 	})
 	if (this.followType !== 'full') {

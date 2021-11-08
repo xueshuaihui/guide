@@ -8,12 +8,11 @@ export default {
 	// doneLabel: '完成',
 	// doneclass: '',
 	content: '',
-	confirmtipPosition: 'bottom',
-	confirmtipClass: '',
 	width: '',
 	height: '',
 	// offsetTop: '20',
 	// offsetLeft: '0',
 	followType: 'follow', // follow     full
 	joints: 'top', // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
+	tipClass: 'animation',
 }
