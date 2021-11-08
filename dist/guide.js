@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Mon, 08 Nov 2021 02:51:29 GMT
+ * Date: Mon, 08 Nov 2021 02:15:44 GMT
  */
 
 (function (global, factory) {
@@ -139,13 +139,15 @@
 	};
 
 	const toolTip = `
-    <div class="guide-image">
+<div class="guide-template">
+    <div class="guide-image guide-image-template1">
         <img src="{{image}}" alt="" />
     </div>
-    <div class="guide-message">
+    <div class="guide-message guide-message-template1">
         <h3>{{title}}</h3>
         <p>{{text}}</p>
     </div>
+</div>
 `;
 
 	const createOverlayer = style => {

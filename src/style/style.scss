@@ -153,13 +153,8 @@ $tip-padding: 24px;
 		border: $tip-padding solid #ffffff;
 		.guide-container {
 			height: calc(100% - 40px);
-			display: flex;
-			.guide-image {
-			}
-
-			.guide-message {
-				flex: 1;
-			}
+			color: rgba(47, 46, 63, 0.85);
+			@import '../template/tooltip.scss';
 		}
 		.guide-button-box {
 			width: 100%;
