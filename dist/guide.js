@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Fri, 05 Nov 2021 03:05:11 GMT
+ * Date: Mon, 08 Nov 2021 02:51:29 GMT
  */
 
 (function (global, factory) {

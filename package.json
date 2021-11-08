@@ -1,7 +1,10 @@
 {
 	"name": "guide",
 	"version": "1.0.0",
-	"main": "guide.js",
+	"main": "dist/guide.min.js",
+	"files": [
+		"/dist"
+	],
 	"directories": {
 		"example": "example"
 	},
