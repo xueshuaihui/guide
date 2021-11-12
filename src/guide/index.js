@@ -52,7 +52,7 @@ export default class Guide {
 	 * @param {object} value - option value.
 	 */
 	setOption(key, value) {
-		if (!key || !value) return
+		if (!key) return
 		this[key] = value
 		return this
 	}
@@ -100,14 +100,20 @@ export default class Guide {
 			this.currentStep = step
 			if (this.steps.indexOf(step) > -1) {
 				this.goToStepNumber(this.steps.indexOf(step))
+			} else {
+				this.exit()
 			}
 		}
 		return this
 	}
 	goToStepNumber(number) {
 		if (this.currentStepNumber !== number) {
-			this.currentStepNumber = number
-			this.goToStep(this.steps[number])
+			if (number >= this.steps.length) {
+				this.exit()
+			} else {
+				this.currentStepNumber = number
+				this.goToStep(this.steps[number])
+			}
 		}
 		return this
 	}

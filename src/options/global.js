@@ -20,13 +20,13 @@ export default {
 	// 遮罩层透明度
 	overlayOpacity: '.7',
 	// 提示框弹出位置是否自动, 设置true时会对confirmtipPosition 覆盖
-	autoPosition: false,
+	// autoPosition: false,
 	// 是否禁止引导dom交互
-	disableInteraction: false,
+	// disableInteraction: false,
 	// 开启动画
 	animation: false,
 	// 触发键盘“esc”时，是否退出引导流程
-	exitOnEsc: false,
+	// exitOnEsc: false,
 	// 宽高
 	width: 200,
 	height: 200,

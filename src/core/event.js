@@ -45,9 +45,45 @@ export const removeWindowResizeListener = function () {
 }
 
 const _classNameInit = function () {
+	const arr = [
+		'guide-button',
+		'guide-next-button',
+		'guide-prev-button',
+		'guide-skip-button',
+		'guide-done-button',
+	]
 	Object.values(this).forEach((item) => {
-		item && item.classList.remove('hide', 'show')
+		if (item) {
+			item.classList.forEach((key) => {
+				if (arr.indexOf(key) < 0) {
+					item.classList.remove(key)
+				}
+			})
+		}
 	})
+}
+const _setClassLabel = function () {
+	const { next, prev, skip, done } = this.button
+	next.innerText = this.currentStep[`nextLabel`] || this[`nextLabel`]
+	prev.innerText = this.currentStep[`prevLabel`] || this[`prevLabel`]
+	skip.innerText = this.currentStep[`skipLabel`] || this[`skipLabel`]
+	done.innerText = this.currentStep[`doneLabel`] || this[`doneLabel`]
+	const nextclass = this.currentStep.nextclass || this.nextclass
+	const prevclass = this.currentStep.prevclass || this.prevclass
+	const skipclass = this.currentStep.skipclass || this.skipclass
+	const doneclass = this.currentStep.doneclass || this.doneclass
+	if (nextclass && nextclass !== '') {
+		next.classList.add(nextclass)
+	}
+	if (prevclass && prevclass !== '') {
+		prev.classList.add(prevclass)
+	}
+	if (skipclass && skipclass !== '') {
+		skip.classList.add(skipclass)
+	}
+	if (doneclass && doneclass !== '') {
+		done.classList.add(doneclass)
+	}
 }
 /**
  * shep 发生改变时触发
@@ -59,7 +95,6 @@ export const stepChange = function () {
 	const index = this.currentStepNumber
 	const length = steps.length
 	const { next, prev, skip, done } = this.button
-	console.log(index, length, 0 < index < length - 1)
 	if (index === 0 && index === length - 1) {
 		// 起始
 		next?.classList.add('hide')
@@ -84,6 +119,8 @@ export const stepChange = function () {
 		skip?.classList.add('hide')
 		done?.classList.add('hide')
 	}
+
+	_setClassLabel.apply(this)
 }
 const resolvePath = (location) => {
 	let path

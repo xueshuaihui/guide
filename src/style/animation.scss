@@ -1,7 +1,4 @@
-@keyframes bounce {
-	0% {
-		margin-top: 0;
-	}
+@keyframes bounce-top {
 	20% {
 		margin-top: 5px;
 	}
@@ -13,5 +10,89 @@
 	}
 	100% {
 		margin-top: 0;
+	}
+}
+@keyframes bounce-bottom {
+	20% {
+		margin-bottom: 5px;
+	}
+	50% {
+		margin-bottom: 10px;
+	}
+	80% {
+		margin-bottom: 5px;
+	}
+	100% {
+		margin-bottom: 0;
+	}
+}
+@keyframes bounce-left {
+	20% {
+		margin-left: 5px;
+	}
+	50% {
+		margin-left: 10px;
+	}
+	80% {
+		margin-left: 5px;
+	}
+	100% {
+		margin-left: 0;
+	}
+}
+@keyframes bounce-right {
+	20% {
+		margin-right: 5px;
+	}
+	50% {
+		margin-right: 10px;
+	}
+	80% {
+		margin-right: 5px;
+	}
+	100% {
+		margin-right: 0;
+	}
+}
+.guide-tooltip {
+	&.top,
+	&.top-left,
+	&.top-right {
+		&.animation {
+			animation: bounce-top 0.8s ease infinite;
+			&:hover {
+				animation: bounce-top 0.8s ease 0;
+			}
+		}
+	}
+	&.right,
+	&.right-top,
+	&.right-bottom {
+		&.animation {
+			animation: bounce-right 0.8s ease infinite;
+			&:hover {
+				animation: bounce-right 0.8s ease 0;
+			}
+		}
+	}
+	&.left,
+	&.left-top,
+	&.left-bottom {
+		&.animation {
+			animation: bounce-left 0.8s ease infinite;
+			&:hover {
+				animation: bounce-left 0.8s ease 0;
+			}
+		}
+	}
+	&.bottom,
+	&.bottom-left,
+	&.bottom-right {
+		&.animation {
+			animation: bounce-bottom 0.8s ease infinite;
+			&:hover {
+				animation: bounce-bottom 0.8s ease 0;
+			}
+		}
 	}
 }

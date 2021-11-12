@@ -22,28 +22,47 @@ export const createHelperLayer = function (style) {
         <div class="guide-tooltip-main">
             <div class="guide-container"></div>
             <div class="guide-button-box">
-                <div class="guide-button guide-next-button ${this.guide.nextclass}">${this.guide.nextLabel}</div>
-                <div class="guide-button guide-prev-button ${this.guide.prevclass}">${this.guide.prevLabel}</div>
-                <div class="guide-button guide-skip-button ${this.guide.skipclass}">${this.guide.skipLabel}</div>
-                <div class="guide-button guide-done-button ${this.guide.doneclass}">${this.guide.doneLabel}</div>
+                <div class="guide-button guide-next-button ${
+					this.nextclass || this.guide.nextclass
+				}">${this.nextLabel || this.guide.nextLabel}</div>
+                <div class="guide-button guide-prev-button ${
+					this.prevclass || this.guide.prevclass
+				}">${this.prevLabel || this.guide.prevLabel}</div>
+                <div class="guide-button guide-skip-button ${
+					this.skipclass || this.guide.skipclass
+				}">${this.skipLabel || this.guide.skipLabel}</div>
+                <div class="guide-button guide-done-button ${
+					this.doneclass || this.guide.doneclass
+				}">${this.doneLabel || this.guide.doneLabel}</div>
             </div>
         </div>
     </div>
     `
 	return helperLayer
 }
-export const setGuideContainer = function () {
+const _updateToolTipClass = function () {
 	// 更新guide-tooltip class
 	this.guide.toolTip.classList.forEach((key) => {
 		if (key !== 'guide-tooltip') {
 			this.guide.toolTip.classList.remove(key)
 		}
 	})
+	// 添加位置class
 	if (this.followType !== 'full') {
 		this.guide.toolTip.classList.add(this.joints)
 	}
+	// 添加动画class
+	if (this.guide.animation) {
+		this.guide.toolTip.classList.add('animation')
+	}
+	// 更新tipclass
+	if (this.tipClass !== '') {
+		this.guide.toolTip.classList.add(this.tipClass)
+	}
+}
 
-	// 更新buttons
+export const setGuideContainer = function () {
+	_updateToolTipClass.apply(this)
 	// 更新内容
 	let htmlString
 	const type = TypeOf(this.content)

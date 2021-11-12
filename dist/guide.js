@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Mon, 08 Nov 2021 10:11:35 GMT
+ * Date: Tue, 09 Nov 2021 02:51:14 GMT
  */
 
 (function (global, factory) {
@@ -34,13 +34,13 @@
 	  // 遮罩层透明度
 	  overlayOpacity: '.7',
 	  // 提示框弹出位置是否自动, 设置true时会对confirmtipPosition 覆盖
-	  autoPosition: false,
+	  // autoPosition: false,
 	  // 是否禁止引导dom交互
-	  disableInteraction: false,
+	  // disableInteraction: false,
 	  // 开启动画
 	  animation: false,
 	  // 触发键盘“esc”时，是否退出引导流程
-	  exitOnEsc: false,
+	  // exitOnEsc: false,
 	  // 宽高
 	  width: 200,
 	  height: 200
@@ -64,7 +64,7 @@
 	  // follow     full
 	  joints: 'top',
 	  // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
-	  tipClass: 'animation'
+	  tipClass: ''
 	};
 
 	/**
@@ -170,28 +170,42 @@
         <div class="guide-tooltip-main">
             <div class="guide-container"></div>
             <div class="guide-button-box">
-                <div class="guide-button guide-next-button ${this.guide.nextclass}">${this.guide.nextLabel}</div>
-                <div class="guide-button guide-prev-button ${this.guide.prevclass}">${this.guide.prevLabel}</div>
-                <div class="guide-button guide-skip-button ${this.guide.skipclass}">${this.guide.skipLabel}</div>
-                <div class="guide-button guide-done-button ${this.guide.doneclass}">${this.guide.doneLabel}</div>
+                <div class="guide-button guide-next-button ${this.nextclass || this.guide.nextclass}">${this.nextLabel || this.guide.nextLabel}</div>
+                <div class="guide-button guide-prev-button ${this.prevclass || this.guide.prevclass}">${this.prevLabel || this.guide.prevLabel}</div>
+                <div class="guide-button guide-skip-button ${this.skipclass || this.guide.skipclass}">${this.skipLabel || this.guide.skipLabel}</div>
+                <div class="guide-button guide-done-button ${this.doneclass || this.guide.doneclass}">${this.doneLabel || this.guide.doneLabel}</div>
             </div>
         </div>
     </div>
     `;
 	  return helperLayer;
 	};
-	const setGuideContainer = function () {
+
+	const _updateToolTipClass = function () {
 	  // 更新guide-tooltip class
 	  this.guide.toolTip.classList.forEach(key => {
 	    if (key !== 'guide-tooltip') {
 	      this.guide.toolTip.classList.remove(key);
 	    }
-	  });
+	  }); // 添加位置class
 
 	  if (this.followType !== 'full') {
 	    this.guide.toolTip.classList.add(this.joints);
-	  } // 更新buttons
-	  // 更新内容
+	  } // 添加动画class
+
+
+	  if (this.guide.animation) {
+	    this.guide.toolTip.classList.add('animation');
+	  } // 更新tipclass
+
+
+	  if (this.tipClass !== '') {
+	    this.guide.toolTip.classList.add(this.tipClass);
+	  }
+	};
+
+	const setGuideContainer = function () {
+	  _updateToolTipClass.apply(this); // 更新内容
 
 
 	  let htmlString;
@@ -381,9 +395,49 @@
 	};
 
 	const _classNameInit = function () {
+	  const arr = ['guide-button', 'guide-next-button', 'guide-prev-button', 'guide-skip-button', 'guide-done-button'];
 	  Object.values(this).forEach(item => {
-	    item && item.classList.remove('hide', 'show');
+	    if (item) {
+	      item.classList.forEach(key => {
+	        if (arr.indexOf(key) < 0) {
+	          item.classList.remove(key);
+	        }
+	      });
+	    }
 	  });
+	};
+
+	const _setClassLabel = function () {
+	  const {
+	    next,
+	    prev,
+	    skip,
+	    done
+	  } = this.button;
+	  next.innerText = this.currentStep[`nextLabel`] || this[`nextLabel`];
+	  prev.innerText = this.currentStep[`prevLabel`] || this[`prevLabel`];
+	  skip.innerText = this.currentStep[`skipLabel`] || this[`skipLabel`];
+	  done.innerText = this.currentStep[`doneLabel`] || this[`doneLabel`];
+	  const nextclass = this.currentStep.nextclass || this.nextclass;
+	  const prevclass = this.currentStep.prevclass || this.prevclass;
+	  const skipclass = this.currentStep.skipclass || this.skipclass;
+	  const doneclass = this.currentStep.doneclass || this.doneclass;
+
+	  if (nextclass && nextclass !== '') {
+	    next.classList.add(nextclass);
+	  }
+
+	  if (prevclass && prevclass !== '') {
+	    prev.classList.add(prevclass);
+	  }
+
+	  if (skipclass && skipclass !== '') {
+	    skip.classList.add(skipclass);
+	  }
+
+	  if (doneclass && doneclass !== '') {
+	    done.classList.add(doneclass);
+	  }
 	};
 	/**
 	 * shep 发生改变时触发
@@ -404,7 +458,6 @@
 	    skip,
 	    done
 	  } = this.button;
-	  console.log(index, length, 0 < index < length - 1);
 
 	  if (index === 0 && index === length - 1) {
 	    // 起始
@@ -430,6 +483,8 @@
 	    skip?.classList.add('hide');
 	    done?.classList.add('hide');
 	  }
+
+	  _setClassLabel.apply(this);
 	};
 
 	const resolvePath = location => {
@@ -529,7 +584,7 @@
 
 
 	  setOption(key, value) {
-	    if (!key || !value) return;
+	    if (!key) return;
 	    this[key] = value;
 	    return this;
 	  }
@@ -587,6 +642,8 @@
 
 	      if (this.steps.indexOf(step) > -1) {
 	        this.goToStepNumber(this.steps.indexOf(step));
+	      } else {
+	        this.exit();
 	      }
 	    }
 
@@ -595,8 +652,12 @@
 
 	  goToStepNumber(number) {
 	    if (this.currentStepNumber !== number) {
-	      this.currentStepNumber = number;
-	      this.goToStep(this.steps[number]);
+	      if (number >= this.steps.length) {
+	        this.exit();
+	      } else {
+	        this.currentStepNumber = number;
+	        this.goToStep(this.steps[number]);
+	      }
 	    }
 
 	    return this;

@@ -1,6 +1,4 @@
-@-webkit-keyframes bounce {
-  0% {
-    margin-top: 0; }
+@-webkit-keyframes bounce-top {
   20% {
     margin-top: 5px; }
   50% {
@@ -10,9 +8,7 @@
   100% {
     margin-top: 0; } }
 
-@keyframes bounce {
-  0% {
-    margin-top: 0; }
+@keyframes bounce-top {
   20% {
     margin-top: 5px; }
   50% {
@@ -21,6 +17,94 @@
     margin-top: 5px; }
   100% {
     margin-top: 0; } }
+
+@-webkit-keyframes bounce-bottom {
+  20% {
+    margin-bottom: 5px; }
+  50% {
+    margin-bottom: 10px; }
+  80% {
+    margin-bottom: 5px; }
+  100% {
+    margin-bottom: 0; } }
+
+@keyframes bounce-bottom {
+  20% {
+    margin-bottom: 5px; }
+  50% {
+    margin-bottom: 10px; }
+  80% {
+    margin-bottom: 5px; }
+  100% {
+    margin-bottom: 0; } }
+
+@-webkit-keyframes bounce-left {
+  20% {
+    margin-left: 5px; }
+  50% {
+    margin-left: 10px; }
+  80% {
+    margin-left: 5px; }
+  100% {
+    margin-left: 0; } }
+
+@keyframes bounce-left {
+  20% {
+    margin-left: 5px; }
+  50% {
+    margin-left: 10px; }
+  80% {
+    margin-left: 5px; }
+  100% {
+    margin-left: 0; } }
+
+@-webkit-keyframes bounce-right {
+  20% {
+    margin-right: 5px; }
+  50% {
+    margin-right: 10px; }
+  80% {
+    margin-right: 5px; }
+  100% {
+    margin-right: 0; } }
+
+@keyframes bounce-right {
+  20% {
+    margin-right: 5px; }
+  50% {
+    margin-right: 10px; }
+  80% {
+    margin-right: 5px; }
+  100% {
+    margin-right: 0; } }
+
+.guide-tooltip.top.animation, .guide-tooltip.top-left.animation, .guide-tooltip.top-right.animation {
+  -webkit-animation: bounce-top 0.8s ease infinite;
+          animation: bounce-top 0.8s ease infinite; }
+  .guide-tooltip.top.animation:hover, .guide-tooltip.top-left.animation:hover, .guide-tooltip.top-right.animation:hover {
+    -webkit-animation: bounce-top 0.8s ease 0;
+            animation: bounce-top 0.8s ease 0; }
+
+.guide-tooltip.right.animation, .guide-tooltip.right-top.animation, .guide-tooltip.right-bottom.animation {
+  -webkit-animation: bounce-right 0.8s ease infinite;
+          animation: bounce-right 0.8s ease infinite; }
+  .guide-tooltip.right.animation:hover, .guide-tooltip.right-top.animation:hover, .guide-tooltip.right-bottom.animation:hover {
+    -webkit-animation: bounce-right 0.8s ease 0;
+            animation: bounce-right 0.8s ease 0; }
+
+.guide-tooltip.left.animation, .guide-tooltip.left-top.animation, .guide-tooltip.left-bottom.animation {
+  -webkit-animation: bounce-left 0.8s ease infinite;
+          animation: bounce-left 0.8s ease infinite; }
+  .guide-tooltip.left.animation:hover, .guide-tooltip.left-top.animation:hover, .guide-tooltip.left-bottom.animation:hover {
+    -webkit-animation: bounce-left 0.8s ease 0;
+            animation: bounce-left 0.8s ease 0; }
+
+.guide-tooltip.bottom.animation, .guide-tooltip.bottom-left.animation, .guide-tooltip.bottom-right.animation {
+  -webkit-animation: bounce-bottom 0.8s ease infinite;
+          animation: bounce-bottom 0.8s ease infinite; }
+  .guide-tooltip.bottom.animation:hover, .guide-tooltip.bottom-left.animation:hover, .guide-tooltip.bottom-right.animation:hover {
+    -webkit-animation: bounce-bottom 0.8s ease 0;
+            animation: bounce-bottom 0.8s ease 0; }
 
 .guide-overlayer {
   width: 100%;
@@ -63,9 +147,6 @@
     top: 100%;
     left: 50%;
     transform: translateX(-50%); }
-    .guide-tooltip.top.animation, .guide-tooltip.top-left.animation, .guide-tooltip.top-right.animation {
-      -webkit-animation: bounce 0.8s ease-in-out 1s 3;
-              animation: bounce 0.8s ease-in-out 1s 3; }
     .guide-tooltip.top.top-right .guide-tooltip-main, .guide-tooltip.top-left.top-right .guide-tooltip-main, .guide-tooltip.top-right.top-right .guide-tooltip-main {
       transform: translateX(calc(-50% + 30px)); }
     .guide-tooltip.top.top-left .guide-tooltip-main, .guide-tooltip.top-left.top-left .guide-tooltip-main, .guide-tooltip.top-right.top-left .guide-tooltip-main {

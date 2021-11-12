@@ -5,9 +5,6 @@ $tip-padding: 24px;
 	top: 100%;
 	left: 50%;
 	transform: translateX(-50%);
-	&.animation {
-		animation: bounce 0.8s ease-in-out 1s 3;
-	}
 
 	&.top-right {
 		.guide-tooltip-main {

@@ -1,8 +1,5 @@
 $tip-padding: 24px;
-@keyframes bounce {
-	0% {
-		margin-top: 0;
-	}
+@keyframes bounce-top {
 	20% {
 		margin-top: 5px;
 	}
@@ -16,15 +13,419 @@ $tip-padding: 24px;
 		margin-top: 0;
 	}
 }
+@keyframes bounce-bottom {
+	20% {
+		margin-bottom: 5px;
+	}
+	50% {
+		margin-bottom: 10px;
+	}
+	80% {
+		margin-bottom: 5px;
+	}
+	100% {
+		margin-bottom: 0;
+	}
+}
+@keyframes bounce-left {
+	20% {
+		margin-left: 5px;
+	}
+	50% {
+		margin-left: 10px;
+	}
+	80% {
+		margin-left: 5px;
+	}
+	100% {
+		margin-left: 0;
+	}
+}
+@keyframes bounce-right {
+	20% {
+		margin-right: 5px;
+	}
+	50% {
+		margin-right: 10px;
+	}
+	80% {
+		margin-right: 5px;
+	}
+	100% {
+		margin-right: 0;
+	}
+}
+.guide-tooltip {
+	&.top,
+	&.top-left,
+	&.top-right {
+		&.animation {
+			animation: bounce-top 0.8s ease infinite;
+			&:hover {
+				animation: bounce-top 0.8s ease 0;
+			}
+		}
+	}
+	&.right,
+	&.right-top,
+	&.right-bottom {
+		&.animation {
+			animation: bounce-right 0.8s ease infinite;
+			&:hover {
+				animation: bounce-right 0.8s ease 0;
+			}
+		}
+	}
+	&.left,
+	&.left-top,
+	&.left-bottom {
+		&.animation {
+			animation: bounce-left 0.8s ease infinite;
+			&:hover {
+				animation: bounce-left 0.8s ease 0;
+			}
+		}
+	}
+	&.bottom,
+	&.bottom-left,
+	&.bottom-right {
+		&.animation {
+			animation: bounce-bottom 0.8s ease infinite;
+			&:hover {
+				animation: bounce-bottom 0.8s ease 0;
+			}
+		}
+	}
+}
 
 @mixin joints-top {
 	flex-direction: column;
 	top: 100%;
 	left: 50%;
 	transform: translateX(-50%);
-	&.animation {
-		animation: bounce 0.8s ease-in-out 1s 3;
+
+	&.top-right {
+		.guide-tooltip-main {
+			transform: translateX(calc(-50% + 30px));
+		}
 	}
+	&.top-left {
+		.guide-tooltip-main {
+			transform: translateX(calc(50% - 30px));
+		}
+	}
+	.guide-joints {
+		display: block;
+		transform: rotate(0deg);
+	}
+}
+@mixin joints-bottom {
+	bottom: 100%;
+	flex-direction: column-reverse;
+	left: 50%;
+	transform: translateX(-50%);
+	&.bottom-right {
+		.guide-tooltip-main {
+			transform: translateX(calc(-50% + 30px));
+		}
+	}
+	&.bottom-left {
+		.guide-tooltip-main {
+			transform: translateX(calc(50% - 30px));
+		}
+	}
+	.guide-joints {
+		display: block;
+		transform: rotate(180deg);
+	}
+}
+@mixin joints-left {
+	flex-direction: row;
+	left: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	&.left-top {
+		.guide-tooltip-main {
+			transform: translateY(calc(50% - 30px));
+		}
+	}
+	&.left-bottom {
+		.guide-tooltip-main {
+			transform: translateY(calc(-50% + 30px));
+		}
+	}
+	.guide-joints {
+		display: block;
+		transform: rotate(-90deg);
+	}
+}
+@mixin joints-right {
+	right: 100%;
+	flex-direction: row-reverse;
+	top: 50%;
+	transform: translateY(-50%);
+	&.right-top {
+		.guide-tooltip-main {
+			transform: translateY(calc(50% - 30px));
+		}
+	}
+	&.right-bottom {
+		.guide-tooltip-main {
+			transform: translateY(calc(-50% + 30px));
+		}
+	}
+	.guide-joints {
+		display: block;
+		transform: rotate(90deg);
+	}
+}
+.guide-overlayer {
+	width: 100%;
+	height: 100%;
+	// background: rgb(0, 0, 0);
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 9990;
+}
+.guide-target {
+	position: relative;
+	z-index: 9991;
+}
+.guide-helperLayer {
+	position: fixed;
+	box-shadow: rgba(33, 33, 33, 0.8) 0px 0px 1px 2px,
+		rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px;
+	opacity: 1;
+	cursor: pointer;
+	z-index: 9992;
+	// &.animation {
+	transition: all 0.5s;
+	// }
+}
+.guide-tooltip {
+	position: absolute;
+	z-index: 9993;
+	cursor: pointer;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	transform-origin: center center;
+	transform: translate(-50%, -50%);
+	&.center {
+	}
+	.guide-joints {
+		display: none;
+		border-style: solid;
+		border-width: 0 10px 20px 10px;
+		border-color: transparent transparent#ffffff transparent;
+		width: 0px;
+		height: 0px;
+	}
+
+	&.top,
+	&.top-left,
+	&.top-right {
+		@include joints-top;
+	}
+	&.right,
+	&.right-top,
+	&.right-bottom {
+		@include joints-right;
+	}
+	&.left,
+	&.left-top,
+	&.left-bottom {
+		@include joints-left;
+	}
+	&.bottom,
+	&.bottom-left,
+	&.bottom-right {
+		@include joints-bottom;
+	}
+	.guide-tooltip-main {
+		background: #ffffff;
+		border: 1px solid #eeeff1;
+		// box-sizing: border-box;
+		box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.06);
+		border-radius: 16px;
+		border: $tip-padding solid #ffffff;
+		.guide-container {
+			height: calc(100% - 40px);
+			color: rgba(47, 46, 63, 0.85);
+			.guide-template {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	font-family: PingFang SC;
+	color: rgba(47, 46, 63, 0.85);
+	.guide-image {
+	}
+	.guide-message {
+		flex: 1;
+		h3 {
+			font-weight: 500;
+			font-size: 16px;
+			line-height: 24px;
+			letter-spacing: 1px;
+			color: #2f2e3f;
+		}
+		p {
+			font-size: 13px;
+			line-height: 22px;
+			letter-spacing: 1px;
+			color: rgba(47, 46, 63, 0.85);
+		}
+	}
+}
+
+		}
+		.guide-button-box {
+			width: 100%;
+			height: 40px;
+			display: flex;
+			justify-content: flex-end;
+			.guide-button {
+				width: 88px;
+				height: 40px;
+				border: 1px solid #eeeff1;
+				box-sizing: border-box;
+				border-radius: 32px;
+				text-align: center;
+				line-height: 40px;
+				&.guide-next-button {
+					background: #2878ff;
+					color: #ffffff;
+				}
+				&.guide-prev-button {
+					background: #ffffff;
+					color: #2f2e3f;
+				}
+				&.guide-skip-button {
+					background: #ffffff;
+					color: #2f2e3f;
+				}
+				&.guide-done-button {
+					background: #2878ff;
+					color: #ffffff;
+				}
+			}
+		}
+	}
+
+	.show {
+		display: block;
+	}
+	.hide {
+		display: none;
+	}
+}
+
+$tip-padding: 24px;
+@keyframes bounce-top {
+	20% {
+		margin-top: 5px;
+	}
+	50% {
+		margin-top: 10px;
+	}
+	80% {
+		margin-top: 5px;
+	}
+	100% {
+		margin-top: 0;
+	}
+}
+@keyframes bounce-bottom {
+	20% {
+		margin-bottom: 5px;
+	}
+	50% {
+		margin-bottom: 10px;
+	}
+	80% {
+		margin-bottom: 5px;
+	}
+	100% {
+		margin-bottom: 0;
+	}
+}
+@keyframes bounce-left {
+	20% {
+		margin-left: 5px;
+	}
+	50% {
+		margin-left: 10px;
+	}
+	80% {
+		margin-left: 5px;
+	}
+	100% {
+		margin-left: 0;
+	}
+}
+@keyframes bounce-right {
+	20% {
+		margin-right: 5px;
+	}
+	50% {
+		margin-right: 10px;
+	}
+	80% {
+		margin-right: 5px;
+	}
+	100% {
+		margin-right: 0;
+	}
+}
+.guide-tooltip {
+	&.top,
+	&.top-left,
+	&.top-right {
+		&.animation {
+			animation: bounce-top 0.8s ease infinite;
+			&:hover {
+				animation: bounce-top 0.8s ease 0;
+			}
+		}
+	}
+	&.right,
+	&.right-top,
+	&.right-bottom {
+		&.animation {
+			animation: bounce-right 0.8s ease infinite;
+			&:hover {
+				animation: bounce-right 0.8s ease 0;
+			}
+		}
+	}
+	&.left,
+	&.left-top,
+	&.left-bottom {
+		&.animation {
+			animation: bounce-left 0.8s ease infinite;
+			&:hover {
+				animation: bounce-left 0.8s ease 0;
+			}
+		}
+	}
+	&.bottom,
+	&.bottom-left,
+	&.bottom-right {
+		&.animation {
+			animation: bounce-bottom 0.8s ease infinite;
+			&:hover {
+				animation: bounce-bottom 0.8s ease 0;
+			}
+		}
+	}
+}
+
+@mixin joints-top {
+	flex-direction: column;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
 
 	&.top-right {
 		.guide-tooltip-main {
