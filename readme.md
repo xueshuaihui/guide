@@ -4,7 +4,8 @@
 
 ### npm 安装
 
-推荐使用 npm 的方式安装
+推荐使用 npm 的方式安装  
+目前还未发布，本地 link 调试或者使用 `/example`
 
 ```javascript
 npm install guide --save
@@ -15,8 +16,8 @@ npm install guide --save
 下载压缩包，在页面上直接引入 js 和 css 文件即可开始使用。
 
 ```javascript
-<link rel="stylesheet" href="../../dist/guide.min.css">
-<script src="../../dist/guide.min.js"></script>
+<link rel="stylesheet" href="./dist/guide.min.css">
+<script src="/dist/guide.min.js"></script>
 ```
 
 ## 基本调用
@@ -117,13 +118,47 @@ guide.start()
 ### 全局引导维护
 
 ```javascript
-
+guide.addAllSteps({
+	init: [
+		{
+			el: '.logo img',
+			content: '点击此处开启下一个引导',
+			width: 410,
+			height: 198,
+			tipClass: 'tipclass1',
+		},
+	],
+	click: [
+		...
+		{
+			el: '.dropdown-toggle',
+			content: {
+				image: '',
+				title: '分享项目',
+				text: '分享链接给同事，邀请同事发表意见',
+			},
+			width: 410,
+			height: 198,
+			tipClass: 'tipclass2',
+			nextLabel: '好哒1',
+			nextclass: 'test1',
+			prevLabel: '上一步',
+			prevclass: 'test2',
+			skipLabel: '跳过',
+			skipclass: 'test3',
+			doneLabel: '完成',
+			doneclass: 'test4',
+		},
+		....
+	],
+})
+guide.start('init')
 ```
 
 ### 触发
 
 ```javascript
-
+guide.start('click')
 ```
 
 ## 自定义模版
