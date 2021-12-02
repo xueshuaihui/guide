@@ -1,14 +1,5 @@
 import { createElement, TypeOf } from '../tools/tools'
 import { toolTip } from '../template/tooltip'
-
-export const createOverlayer = (style) => {
-	let attr = {
-		style: style,
-	}
-	attr.class = 'guide-overlayer'
-	const element = createElement('div', attr)
-	return element
-}
 export const createHelperLayer = function (style) {
 	let attr = {
 		style: style,
@@ -40,6 +31,55 @@ export const createHelperLayer = function (style) {
     `
 	return helperLayer
 }
+
+/**
+ * 创建遮罩层
+ * @param {json} style 遮罩层基础参数
+ * @return {object}  Overlayer对象
+ */
+export const createOverlayer = (style) => {
+	let attr = {
+		style: style,
+	}
+	attr.class = 'guide-overlayer'
+	const element = createElement('div', attr)
+	return element
+}
+/**
+ * 创建引导step的dom 外框
+ * @param {json} style 基础参数
+ * @return {object}  外框对象
+ */
+export const createGuideStepBox = function (style, name) {
+	let attr = {
+		style: style,
+	}
+	attr.class = 'guide-step-target'
+	const stepTarget = createElement('div', attr)
+	stepTarget.innerHTML = createGuideTipBox.call(this, name)
+	return stepTarget
+}
+/**
+ * 创建引导tip dom
+ */
+const createGuideTipBox = function (name) {
+	return `
+	<div class="guide-tooltip guide-tooltip-${name}" style="">
+	    <div class="guide-joints">
+	    </div>
+	    <div class="guide-tooltip-main">
+	        <div class="guide-container"></div>
+	        <div class="guide-button-box">
+	            <div class="guide-button guide-next-button ${this.nextclass}">${this.nextLabel}</div>
+	            <div class="guide-button guide-prev-button ${this.prevclass}">${this.prevLabel}</div>
+	            <div class="guide-button guide-skip-button ${this.skipclass}">${this.skipLabel}</div>
+	            <div class="guide-button guide-done-button ${this.doneclass}">${this.doneLabel}</div>
+	        </div>
+	    </div>
+	</div>
+	`
+}
+
 const _updateToolTipClass = function () {
 	// 更新guide-tooltip class
 	this.guide.toolTip.classList.forEach((key) => {

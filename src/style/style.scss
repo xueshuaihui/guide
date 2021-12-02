@@ -1,191 +1,55 @@
-$tip-padding: 24px;
-@import './animation.scss';
-@mixin joints-top {
-	flex-direction: column;
-	top: 100%;
-	left: 50%;
-	transform: translateX(-50%);
-
-	&.top-right {
-		.guide-tooltip-main {
-			transform: translateX(calc(-50% + 30px));
-		}
-	}
-	&.top-left {
-		.guide-tooltip-main {
-			transform: translateX(calc(50% - 30px));
-		}
-	}
-	.guide-joints {
-		display: block;
-		transform: rotate(0deg);
-	}
-}
-@mixin joints-bottom {
-	bottom: 100%;
-	flex-direction: column-reverse;
-	left: 50%;
-	transform: translateX(-50%);
-	&.bottom-right {
-		.guide-tooltip-main {
-			transform: translateX(calc(-50% + 30px));
-		}
-	}
-	&.bottom-left {
-		.guide-tooltip-main {
-			transform: translateX(calc(50% - 30px));
-		}
-	}
-	.guide-joints {
-		display: block;
-		transform: rotate(180deg);
-	}
-}
-@mixin joints-left {
-	flex-direction: row;
-	left: 100%;
-	top: 50%;
-	transform: translateY(-50%);
-	&.left-top {
-		.guide-tooltip-main {
-			transform: translateY(calc(50% - 30px));
-		}
-	}
-	&.left-bottom {
-		.guide-tooltip-main {
-			transform: translateY(calc(-50% + 30px));
-		}
-	}
-	.guide-joints {
-		display: block;
-		transform: rotate(-90deg);
-	}
-}
-@mixin joints-right {
-	right: 100%;
-	flex-direction: row-reverse;
-	top: 50%;
-	transform: translateY(-50%);
-	&.right-top {
-		.guide-tooltip-main {
-			transform: translateY(calc(50% - 30px));
-		}
-	}
-	&.right-bottom {
-		.guide-tooltip-main {
-			transform: translateY(calc(-50% + 30px));
-		}
-	}
-	.guide-joints {
-		display: block;
-		transform: rotate(90deg);
-	}
-}
 .guide-overlayer {
 	width: 100%;
 	height: 100%;
-	// background: rgb(0, 0, 0);
 	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 9990;
 }
+
 .guide-target {
 	position: relative;
 	z-index: 9991;
 }
-.guide-helperLayer {
+.guide-step-target {
+	width: 200px;
+	height: 200px;
 	position: fixed;
 	box-shadow: rgba(33, 33, 33, 0.8) 0px 0px 1px 2px,
 		rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px;
 	opacity: 1;
 	cursor: pointer;
 	z-index: 9992;
-	// &.animation {
-	transition: all 0.5s;
-	// }
 }
 .guide-tooltip {
+	width: 200px;
+	height: auto;
 	position: absolute;
 	z-index: 9993;
 	cursor: pointer;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	transform-origin: center center;
-	transform: translate(-50%, -50%);
-	&.center {
-	}
+	top: 100%;
 	.guide-joints {
-		display: none;
+		// display: none;
 		border-style: solid;
 		border-width: 0 10px 20px 10px;
 		border-color: transparent transparent#ffffff transparent;
 		width: 0px;
 		height: 0px;
-	}
-
-	&.top,
-	&.top-left,
-	&.top-right {
-		@include joints-top;
-	}
-	&.right,
-	&.right-top,
-	&.right-bottom {
-		@include joints-right;
-	}
-	&.left,
-	&.left-top,
-	&.left-bottom {
-		@include joints-left;
-	}
-	&.bottom,
-	&.bottom-left,
-	&.bottom-right {
-		@include joints-bottom;
+		margin: auto;
 	}
 	.guide-tooltip-main {
+		width: 100%;
 		background: #ffffff;
 		border: 1px solid #eeeff1;
-		// box-sizing: border-box;
 		box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.06);
 		border-radius: 16px;
-		border: $tip-padding solid #ffffff;
 		.guide-container {
-			height: calc(100% - 40px);
-			color: rgba(47, 46, 63, 0.85);
-			@import '../template/tooltip.scss';
 		}
 		.guide-button-box {
-			width: 100%;
-			height: 40px;
-			display: flex;
-			justify-content: flex-end;
+			overflow: hidden;
 			.guide-button {
-				width: 88px;
-				height: 40px;
-				border: 1px solid #eeeff1;
-				box-sizing: border-box;
-				border-radius: 32px;
-				text-align: center;
-				line-height: 40px;
-				&.guide-next-button {
-					background: #2878ff;
-					color: #ffffff;
-				}
-				&.guide-prev-button {
-					background: #ffffff;
-					color: #2f2e3f;
-				}
-				&.guide-skip-button {
-					background: #ffffff;
-					color: #2f2e3f;
-				}
-				&.guide-done-button {
-					background: #2878ff;
-					color: #ffffff;
-				}
+				float: left;
+				padding: 8px 10px;
 			}
 		}
 	}
