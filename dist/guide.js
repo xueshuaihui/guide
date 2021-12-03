@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Thu, 02 Dec 2021 06:13:33 GMT
+ * Date: Fri, 03 Dec 2021 02:26:28 GMT
  */
 
 (function (global, factory) {
@@ -44,6 +44,28 @@
 	  // 宽高
 	  width: 200,
 	  height: 200
+	};
+
+	let list = {};
+	const Listen = (key, fun) => {
+	  if (!list[key]) {
+	    list[key] = [];
+	  }
+
+	  list[key].push(fun);
+	};
+	const Trigger = (...arg) => {
+	  var key = Array.prototype.shift.call(arg),
+	      fns = list[key];
+	  console.log(fns);
+
+	  if (!fns || fns.length === 0) {
+	    return false;
+	  }
+
+	  for (var i = 0, fn; fn = fns[i++];) {
+	    fn.apply(undefined, arguments);
+	  }
 	};
 
 	/**
@@ -246,14 +268,33 @@
 
 	    if (state) {
 	      this.activeSteps[name] = {
-	        stepNumber: 0,
+	        stepNumber: -1,
 	        steps: steps
-	      }; // 开始流程
+	      };
+	      Listen(name, () => {
+	        console.log(111111, arguments);
+	      }); // 开始流程
+
+	      this.setStepsNumber(name, 0);
 	    } else {
 	      this._removeGuideStepBox(name);
 
 	      delete this.activeSteps[name];
+	      Listen(name);
 	    }
+	  }
+	  /**
+	   * 设置流程步骤
+	   * @param {string} name 流程名称
+	   * @param {number} number 第几步
+	   */
+
+
+	  setStepsNumber(name, number) {
+	    const steps = this.activeSteps[name];
+	    if (!steps) return;
+	    steps.stepNumber = number || -1;
+	    Trigger(name, number);
 	  }
 	  /**
 	   * 创建遮罩层：共用

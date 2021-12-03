@@ -1,6 +1,7 @@
 import { version } from '../../package.json'
 import options from '../options/global'
-// import Step from '../step/index'
+import { Listen, Trigger, Remove } from '../tools/listener'
+import Step from '../step/index'
 // import { TypeOf } from '../tools/tools'
 import { createOverlayer, createGuideStepBox } from '../core/createElement'
 // import {
@@ -61,6 +62,7 @@ export default class Guide {
 		// 激活后 创建外层dom
 		this._createGuideStepBox(code)
 		this.body.appendChild(this.activeSteps[code].element)
+
 		// this.goToStepNumber(0)
 		// buttonAddEventListener.apply(this)
 		// addWindowResizeListener.apply(this)
@@ -75,14 +77,30 @@ export default class Guide {
 		const steps = this.steps[name]
 		if (state) {
 			this.activeSteps[name] = {
-				stepNumber: 0,
+				stepNumber: -1,
 				steps: steps,
 			}
+			Listen(name, () => {
+				console.log(111111, arguments)
+			})
 			// 开始流程
+			this.setStepsNumber(name, 0)
 		} else {
 			this._removeGuideStepBox(name)
 			delete this.activeSteps[name]
+			Listen(name)
 		}
+	}
+	/**
+	 * 设置流程步骤
+	 * @param {string} name 流程名称
+	 * @param {number} number 第几步
+	 */
+	setStepsNumber(name, number) {
+		const steps = this.activeSteps[name]
+		if (!steps) return
+		steps.stepNumber = number || -1
+		Trigger(name, number)
 	}
 	/**
 	 * 创建遮罩层：共用
