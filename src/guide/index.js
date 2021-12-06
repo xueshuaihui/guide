@@ -217,6 +217,7 @@ export default class Guide {
 	}
 	Skip(name) {
 		if (!name) return
+		this.remove(name)
 	}
 	Done(name) {
 		if (!name) return

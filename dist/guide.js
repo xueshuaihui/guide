@@ -602,6 +602,7 @@
 
 	  Skip(name) {
 	    if (!name) return;
+	    this.remove(name);
 	  }
 
 	  Done(name) {
