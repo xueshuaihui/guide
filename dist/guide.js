@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Mon, 06 Dec 2021 12:00:22 GMT
+ * Date: Mon, 06 Dec 2021 15:54:58 GMT
  */
 
 (function (global, factory) {
@@ -462,6 +462,8 @@
 	      steps.stepNumber = number;
 	    } else if (number === '++') {
 	      steps.stepNumber++;
+	    } else if (number === '--') {
+	      steps.stepNumber--;
 	    } // 判断number是否在范围内
 
 
@@ -469,6 +471,23 @@
 
 	    if (steps.stepNumber >= 0 && steps.stepNumber < length) {
 	      Trigger(name, steps.stepNumber);
+	    } else {
+	      this.remove(name);
+	    }
+	  }
+	  /**
+	   * 移除流程
+	   * @param {string} name 流程名称
+	  */
+
+
+	  remove(name) {
+	    if (name) {
+	      this._removeGuideStepBox(name);
+
+	      this.setStepsState(name, false);
+	    } else {
+	      console.error('缺少steps name.');
 	    }
 	  }
 	  /**
@@ -499,6 +518,7 @@
 	  }
 	  /**
 	   * 创建steps外层dom
+	   * @param {string} name 流程名称
 	   */
 
 
@@ -515,6 +535,7 @@
 	  }
 	  /**
 	   * 移除steps外层dom
+	   * @param {string} name 流程名称
 	   */
 
 
@@ -541,7 +562,6 @@
 	        // 进行按钮操作
 	        const code = target.getAttribute('code');
 	        const stepsName = target.getAttribute('steps');
-	        console.log(code, stepsName);
 
 	        switch (code) {
 	          case 'next':

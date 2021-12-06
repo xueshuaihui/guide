@@ -99,11 +99,28 @@ export default class Guide {
 			steps.stepNumber = number
 		} else if (number === '++') {
 			steps.stepNumber++
+		} else if (number === '--') {
+			steps.stepNumber--
 		}
 		// 判断number是否在范围内
 		const length = steps.steps.length
 		if (steps.stepNumber >= 0 && steps.stepNumber < length) {
 			Trigger(name, steps.stepNumber)
+		}else {
+			this.remove(name)
+			
+		}
+	}
+	/**
+	 * 移除流程
+	 * @param {string} name 流程名称
+	*/
+	remove(name){
+		if(name){
+			this._removeGuideStepBox(name)
+			this.setStepsState(name, false)
+		}else {
+			console.error('缺少steps name.');
 		}
 	}
 	/**
@@ -128,6 +145,7 @@ export default class Guide {
 	}
 	/**
 	 * 创建steps外层dom
+	 * @param {string} name 流程名称
 	 */
 	_createGuideStepBox(name) {
 		if (!name) {
@@ -145,6 +163,7 @@ export default class Guide {
 	}
 	/**
 	 * 移除steps外层dom
+	 * @param {string} name 流程名称
 	 */
 	_removeGuideStepBox(name) {
 		if (!name) {
@@ -166,7 +185,6 @@ export default class Guide {
 				// 进行按钮操作
 				const code = target.getAttribute('code')
 				const stepsName = target.getAttribute('steps')
-				console.log(code, stepsName)
 				switch (code) {
 					case 'next':
 						this.Next(stepsName)
