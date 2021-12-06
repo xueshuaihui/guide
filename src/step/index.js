@@ -1,10 +1,6 @@
 import options from '../options/step'
-// // import { setStyle } from '../tools/tools'
-// import {
-// 	createHelperLayer,
-// 	// createTooltip,
-// 	setGuideContainer,
-// } from '../core/createElement'
+import { TypeOf } from '../tools/tools'
+import temp from '../template/template1/tooltip.ejs'
 /**
  * Step类，代表一个步骤.
  * @constructor
@@ -12,8 +8,7 @@ import options from '../options/step'
  */
 export default class Step {
 	constructor(customOptions) {
-		this.el = null
-		this.target = null
+		this.container = null // 放置tip 的容器
 		this.setOptions(options)
 		this.setOptions(customOptions)
 	}
@@ -24,7 +19,6 @@ export default class Step {
 	 */
 	setOption(key, value) {
 		if (!key || !value) return
-		console.log(12321, this)
 		this[key] = value
 	}
 	/**
@@ -36,5 +30,21 @@ export default class Step {
 		Object.keys(options).forEach((key) => {
 			this.setOption(key, options[key])
 		})
+	}
+	/**
+	 * 设置step容器
+	 * @param {hTMLDivElement} container dom 对象
+	 */
+	setContainer(container) {
+		if (TypeOf(container) === 'hTMLDivElement') {
+			this.container = container.querySelector('.guide-container')
+			this.loadTip()
+		}
+	}
+	/**
+	 * 加载tip
+	 */
+	loadTip() {
+		this.container.innerHTML = temp(this.content) // 加载引导tip
 	}
 }

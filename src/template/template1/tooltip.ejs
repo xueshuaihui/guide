@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="./tooltip.scss">
+<div class="guide-tip-template">
+    <% if (locals.image) { %>
+        <div class="guide-image guide-image-template1">
+            <img src="<%= locals.image %>" alt="" />
+        </div>
+        <% } %>
+
+            <div class="guide-message guide-message-template1">
+                <h3>
+                    <%= locals.title %>
+                </h3>
+                <p>
+                    <%= locals.text %>
+                </p>
+            </div>
+</div>

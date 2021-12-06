@@ -11,6 +11,7 @@ import filesize from 'rollup-plugin-filesize'
 import { terser } from 'rollup-plugin-terser'
 import cssnano from 'cssnano'
 import bundleScss from 'rollup-plugin-bundle-scss'
+import ejs from 'rollup-plugin-ejs'
 
 // import sass from 'rollup-plugin-sass'
 
@@ -35,6 +36,12 @@ const jsPlugins = [
 		exclude: 'node_modules/**',
 	}),
 	commonjs(),
+	ejs({
+		include: ['**/*.ejs', '**/*.html'], // optional, '**/*.ejs' by default
+		exclude: ['**/index.html'], // optional, undefined by default
+		compilerOptions: { client: true }, // optional, any options supported by ejs compiler
+		loadStyles: true,
+	}),
 ]
 
 const postCSSPlugins = [normalize, autoprefixer]

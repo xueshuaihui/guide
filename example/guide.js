@@ -46,6 +46,7 @@ const guide = new Guide({
 	},
 })
 // guide.addsteps()
-guide.start('click')
-// guide.start('event')
+// guide.start('click')
+// guide.start('click')
+guide.start('event')
 console.log(guide)

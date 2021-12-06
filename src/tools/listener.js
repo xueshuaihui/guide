@@ -6,14 +6,14 @@ export const Listen = (key, fun) => {
 	list[key].push(fun)
 }
 export const Trigger = (...arg) => {
-	var key = Array.prototype.shift.call(arg),
-		fns = list[key]
-	console.log(fns)
+	// var key = Array.prototype.shift.call(arg),
+	let key = arg[0]
+	const fns = list[key]
 	if (!fns || fns.length === 0) {
 		return false
 	}
 	for (var i = 0, fn; (fn = fns[i++]); ) {
-		fn.apply(this, arguments)
+		fn(arg)
 	}
 }
 export const Remove = (key, fun) => {

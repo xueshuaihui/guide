@@ -1,20 +1,9 @@
 import { version } from '../../package.json'
 import options from '../options/global'
 import { Listen, Trigger, Remove } from '../tools/listener'
-import Step from '../step/index'
-// import { TypeOf } from '../tools/tools'
 import { createOverlayer, createGuideStepBox } from '../core/createElement'
-// import {
-// 	addWindowResizeListener,
-// 	removeWindowResizeListener,
-// 	stepChange,
-// 	locationRemoveEventListener,
-// 	buttonAddEventListener,
-// 	buttonRemoveEventListener,
-// } from '../core/event'
-
-// import buttons from '../core/button'
-// import { Warning } from 'postcss'
+import Step from '../step/index'
+import { TypeOf } from '../tools/tools'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -28,6 +17,7 @@ export default class Guide {
 		this.overlayer = null
 		this.setOptions(options)
 		this.setOptions(customOptions)
+		this.bindEvent()
 	}
 
 	/**
@@ -59,13 +49,6 @@ export default class Guide {
 		if (!this.steps || this.steps?.length === 0) return
 		this._createOverlayer()
 		this.setStepsState(code, true)
-		// 激活后 创建外层dom
-		this._createGuideStepBox(code)
-		this.body.appendChild(this.activeSteps[code].element)
-
-		// this.goToStepNumber(0)
-		// buttonAddEventListener.apply(this)
-		// addWindowResizeListener.apply(this)
 		return this
 	}
 	/**
@@ -76,20 +59,33 @@ export default class Guide {
 	setStepsState(name, state) {
 		const steps = this.steps[name]
 		if (state) {
+			if (this.activeSteps[name]) return
 			this.activeSteps[name] = {
 				stepNumber: -1,
 				steps: steps,
 			}
-			Listen(name, () => {
-				console.log(111111, arguments)
-			})
+			// 激活后 创建外层dom
+			this._createGuideStepBox(name)
+			this.body.appendChild(this.activeSteps[name].element)
+			this._switchStepsNumber(name)
 			// 开始流程
 			this.setStepsNumber(name, 0)
 		} else {
 			this._removeGuideStepBox(name)
 			delete this.activeSteps[name]
-			Listen(name)
 		}
+	}
+	/**
+	 * 切换流程步骤的监听
+	 */
+	_switchStepsNumber(name) {
+		Listen(name, (arg) => {
+			const name = Array.prototype.shift.call(arg)
+			const { element, stepNumber, steps } = this.activeSteps[name]
+			const step = new Step(steps[stepNumber])
+			step.setContainer(element)
+			element.style.display = 'block'
+		})
 	}
 	/**
 	 * 设置流程步骤
@@ -99,8 +95,16 @@ export default class Guide {
 	setStepsNumber(name, number) {
 		const steps = this.activeSteps[name]
 		if (!steps) return
-		steps.stepNumber = number || -1
-		Trigger(name, number)
+		if (TypeOf(number) === 'number') {
+			steps.stepNumber = number
+		} else if (number === '++') {
+			steps.stepNumber++
+		}
+		// 判断number是否在范围内
+		const length = steps.steps.length
+		if (steps.stepNumber >= 0 && steps.stepNumber < length) {
+			Trigger(name, steps.stepNumber)
+		}
 	}
 	/**
 	 * 创建遮罩层：共用
@@ -148,5 +152,56 @@ export default class Guide {
 			return
 		}
 		this.activeSteps[name]?.element?.remove()
+	}
+	/**
+	 * 委托button事件
+	 */
+	bindEvent() {
+		this.body = document.getElementsByTagName('body')[0]
+		this.body.onclick = (e) => {
+			const target = e.target
+			if (
+				Array.prototype.includes.call(target.classList, 'guide-button')
+			) {
+				// 进行按钮操作
+				const code = target.getAttribute('code')
+				const stepsName = target.getAttribute('steps')
+				console.log(code, stepsName)
+				switch (code) {
+					case 'next':
+						this.Next(stepsName)
+						break
+					case 'prev':
+						this.Prev(stepsName)
+						break
+					case 'skip':
+						this.Skip(stepsName)
+						break
+					case 'done':
+						this.Done(stepsName)
+						break
+					default:
+						this.Next(stepsName)
+						break
+				}
+			}
+		}
+	}
+	//
+	Next(name) {
+		if (!name) return
+		const steps = this.activeSteps[name]
+		this.setStepsNumber(name, '++')
+	}
+	Prev(name) {
+		if (!name) return
+		this.setStepsNumber(name, '--')
+	}
+	Skip(name) {
+		if (!name) return
+	}
+	Done(name) {
+		if (!name) return
+		this.setStepsNumber(name, '++')
 	}
 }
