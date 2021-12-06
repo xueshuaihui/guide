@@ -351,8 +351,6 @@
 	        top,
 	        left
 	      };
-	    } else {
-	      console.error('页面未查询到step el');
 	    }
 
 	    this.container.innerHTML = anonymous(this.content); // 加载引导tip
@@ -404,9 +402,9 @@
 	    return this;
 	  }
 	  /**
-	   *开启引导流程
-	      @param {string} code 引导name
-	   */
+	  *开启引导流程
+	     @param {string} code 引导name
+	  */
 
 
 	  start(code) {
@@ -472,7 +470,7 @@
 	  /**
 	   * 更新tip 定位
 	   * @param {string} name 流程名称
-	  */
+	   */
 
 
 	  _setTipPosition(name) {
@@ -481,17 +479,17 @@
 	      currentStep,
 	      element
 	    } = steps;
-	    const {
-	      width,
-	      height,
-	      top,
-	      left
-	    } = currentStep.elTarget;
-	    element.style.display = 'block';
-	    element.style.width = `${width}px`;
-	    element.style.height = `${height}px`;
-	    element.style.top = `${top}px`;
-	    element.style.left = `${left}px`;
+	    element.style.display = "block";
+	    const elTarget = currentStep.elTarget;
+	    const width = elTarget?.width,
+	          height = elTarget?.height,
+	          top = elTarget?.top,
+	          left = elTarget?.left;
+	    console.log(width, height, top, left);
+	    element.style.width = `${width || 0}px`;
+	    element.style.height = `${height || 0}px`;
+	    element.style.top = `${top || 0}px`;
+	    element.style.left = `${left || 0}px`;
 	  }
 	  /**
 	   * 设置流程步骤
@@ -504,11 +502,11 @@
 	    const steps = this.activeSteps[name];
 	    if (!steps) return;
 
-	    if (TypeOf(number) === 'number') {
+	    if (TypeOf(number) === "number") {
 	      steps.stepNumber = number;
-	    } else if (number === '++') {
+	    } else if (number === "++") {
 	      steps.stepNumber++;
-	    } else if (number === '--') {
+	    } else if (number === "--") {
 	      steps.stepNumber--;
 	    } // 判断number是否在范围内
 
@@ -524,7 +522,7 @@
 	  /**
 	   * 移除流程
 	   * @param {string} name 流程名称
-	  */
+	   */
 
 
 	  remove(name) {
@@ -533,7 +531,7 @@
 
 	      this.setStepsState(name, false);
 	    } else {
-	      console.error('缺少steps name.');
+	      console.error("缺少steps name.");
 	    }
 	  }
 	  /**
@@ -544,11 +542,11 @@
 	  _createOverlayer() {
 	    if (this.overlayer) return;
 	    this.overlayer = createOverlayer({
-	      display: 'none'
+	      display: "none"
 	    });
 
 	    if (!this.body) {
-	      this.body = document.getElementsByTagName('body')[0];
+	      this.body = document.getElementsByTagName("body")[0];
 	    }
 
 	    this.body.appendChild(this.overlayer);
@@ -570,12 +568,12 @@
 
 	  _createGuideStepBox(name) {
 	    if (!name) {
-	      console.error('缺少 step name');
+	      console.error("缺少 step name");
 	      return;
 	    }
 
 	    const box = createGuideStepBox.call(this, {
-	      display: 'none'
+	      display: "none"
 	    }, name);
 	    this.activeSteps[name].element = box;
 	  }
@@ -587,7 +585,7 @@
 
 	  _removeGuideStepBox(name) {
 	    if (!name) {
-	      console.error('缺少 step name');
+	      console.error("缺少 step name");
 	      return;
 	    }
 
@@ -599,30 +597,30 @@
 
 
 	  bindEvent() {
-	    this.body = document.getElementsByTagName('body')[0];
+	    this.body = document.getElementsByTagName("body")[0];
 
 	    this.body.onclick = e => {
 	      const target = e.target;
 
-	      if (Array.prototype.includes.call(target.classList, 'guide-button')) {
+	      if (Array.prototype.includes.call(target.classList, "guide-button")) {
 	        // 进行按钮操作
-	        const code = target.getAttribute('code');
-	        const stepsName = target.getAttribute('steps');
+	        const code = target.getAttribute("code");
+	        const stepsName = target.getAttribute("steps");
 
 	        switch (code) {
-	          case 'next':
+	          case "next":
 	            this.Next(stepsName);
 	            break;
 
-	          case 'prev':
+	          case "prev":
 	            this.Prev(stepsName);
 	            break;
 
-	          case 'skip':
+	          case "skip":
 	            this.Skip(stepsName);
 	            break;
 
-	          case 'done':
+	          case "done":
 	            this.Done(stepsName);
 	            break;
 
@@ -638,12 +636,12 @@
 	  Next(name) {
 	    if (!name) return;
 	    this.activeSteps[name];
-	    this.setStepsNumber(name, '++');
+	    this.setStepsNumber(name, "++");
 	  }
 
 	  Prev(name) {
 	    if (!name) return;
-	    this.setStepsNumber(name, '--');
+	    this.setStepsNumber(name, "--");
 	  }
 
 	  Skip(name) {
@@ -653,7 +651,7 @@
 
 	  Done(name) {
 	    if (!name) return;
-	    this.setStepsNumber(name, '++');
+	    this.setStepsNumber(name, "++");
 	  }
 
 	}
