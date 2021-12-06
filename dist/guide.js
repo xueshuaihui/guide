@@ -336,6 +336,25 @@
 
 
 	  loadTip() {
+	    const el = document.querySelector(this.el);
+
+	    if (el) {
+	      const {
+	        width,
+	        height,
+	        top,
+	        left
+	      } = el.getClientRects()[0];
+	      this.elTarget = {
+	        width,
+	        height,
+	        top,
+	        left
+	      };
+	    } else {
+	      console.error('页面未查询到step el');
+	    }
+
 	    this.container.innerHTML = anonymous(this.content); // 加载引导tip
 	  }
 
@@ -422,7 +441,7 @@
 	      this._switchStepsNumber(name); // 开始流程
 
 
-	      this.setStepsNumber(name, 0);
+	      this.setStepsNumber(name, 0); // this.overlayer.style.display = 'block'
 	    } else {
 	      this._removeGuideStepBox(name);
 
@@ -444,8 +463,35 @@
 	      } = this.activeSteps[name];
 	      const step = new Step(steps[stepNumber]);
 	      step.setContainer(element);
-	      element.style.display = 'block';
+	      this.activeSteps[name].currentStep = step;
+
+	      this._setTipPosition(name); // 更新定位
+
 	    });
+	  }
+	  /**
+	   * 更新tip 定位
+	   * @param {string} name 流程名称
+	  */
+
+
+	  _setTipPosition(name) {
+	    const steps = this.activeSteps[name];
+	    const {
+	      currentStep,
+	      element
+	    } = steps;
+	    const {
+	      width,
+	      height,
+	      top,
+	      left
+	    } = currentStep.elTarget;
+	    element.style.display = 'block';
+	    element.style.width = `${width}px`;
+	    element.style.height = `${height}px`;
+	    element.style.top = `${top}px`;
+	    element.style.left = `${left}px`;
 	  }
 	  /**
 	   * 设置流程步骤

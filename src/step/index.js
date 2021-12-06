@@ -45,6 +45,13 @@ export default class Step {
 	 * 加载tip
 	 */
 	loadTip() {
+		const el = document.querySelector(this.el)
+		if(el){
+			const {width, height, top, left} = el.getClientRects()[0]
+			this.elTarget = {width, height, top, left}
+		}else {
+			console.error('页面未查询到step el');
+		}
 		this.container.innerHTML = temp(this.content) // 加载引导tip
 	}
 }

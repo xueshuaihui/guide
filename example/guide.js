@@ -27,7 +27,7 @@ const guide = new Guide({
 		],
 		event: [
 			{
-				el: '.test2',
+				el: '.logo',
 				content: {
 					image: '',
 					title: '分享项目',
@@ -37,7 +37,7 @@ const guide = new Guide({
 				height: 198,
 			},
 			{
-				el: '.test3',
+				el: '#morris-area-chart',
 				content: 'test',
 				width: 410,
 				height: 198,
