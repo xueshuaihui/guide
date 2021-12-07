@@ -7,12 +7,16 @@ export default {
 	// skipclass: '',
 	// doneLabel: '完成',
 	// doneclass: '',
-	content: '',
+	content: '', // 内容数据
 	width: '',
 	height: '',
-	// offsetTop: '20',
-	// offsetLeft: '0',
-	followType: 'follow', // follow     full
-	joints: 'top', // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
+	offsetX: '0',
+	offsetY: '0',
+	position: 'bottom', // top bottom left right
 	tipClass: '',
+	jointsClass: '',
+	jointsWidth: '',
+	jointsHeight: '',
+	jointsX: '',
+	jointsY: '',
 }

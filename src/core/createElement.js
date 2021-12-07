@@ -31,12 +31,12 @@ export const createGuideStepBox = function (style, name) {
  * 创建引导tip dom
  */
 const createGuideTipBox = function (name) {
-	console.log(name)
+	const activeSteps = this.activeSteps[name]
 	return `
 	<div class="guide-tooltip guide-tooltip-${name}" style="">
 	    <div class="guide-joints">
 	    </div>
-	    <div class="guide-tooltip-main">
+	    <div class="guide-tooltip-main" style="width:${this.width}px;height:${this.height}px;">
 	        <div class="guide-container"></div>
 	        <div class="guide-button-box">
 	            <div class="guide-button guide-next-button ${this.nextclass}" code="next" steps="${name}">${this.nextLabel}</div>

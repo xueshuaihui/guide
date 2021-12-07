@@ -172,12 +172,12 @@
 	 */
 
 	const createGuideTipBox = function (name) {
-	  console.log(name);
+	  this.activeSteps[name];
 	  return `
 	<div class="guide-tooltip guide-tooltip-${name}" style="">
 	    <div class="guide-joints">
 	    </div>
-	    <div class="guide-tooltip-main">
+	    <div class="guide-tooltip-main" style="width:${this.width}px;height:${this.height}px;">
 	        <div class="guide-container"></div>
 	        <div class="guide-button-box">
 	            <div class="guide-button guide-next-button ${this.nextclass}" code="next" steps="${name}">${this.nextLabel}</div>
@@ -200,15 +200,19 @@
 	  // doneLabel: '完成',
 	  // doneclass: '',
 	  content: '',
+	  // 内容数据
 	  width: '',
 	  height: '',
-	  // offsetTop: '20',
-	  // offsetLeft: '0',
-	  followType: 'follow',
-	  // follow     full
-	  joints: 'top',
-	  // top top-left top-right bottom bottom-left bottom-right left left-top left-bototm right right-top
-	  tipClass: ''
+	  offsetX: '0',
+	  offsetY: '0',
+	  position: 'bottom',
+	  // top bottom left right
+	  tipClass: '',
+	  jointsClass: '',
+	  jointsWidth: '',
+	  jointsHeight: '',
+	  jointsX: '',
+	  jointsY: ''
 	};
 
 	function anonymous(locals, escapeFn, include, rethrow
@@ -338,7 +342,7 @@
 	  loadTip() {
 	    const el = document.querySelector(this.el);
 
-	    if (el) {
+	    if (el && el.getClientRects().length) {
 	      const {
 	        width,
 	        height,
@@ -354,6 +358,23 @@
 	    }
 
 	    this.container.innerHTML = anonymous(this.content); // 加载引导tip
+	  }
+	  /**
+	   * 设置tip宽高
+	   * @param {hTMLDivElement} element dom 对象
+	   * @param {json} params 全局step宽高
+	   */
+
+
+	  setSize(element, params) {
+	    if (Array.prototype.includes.call(element.classList, 'guide-step-target')) {
+	      const main = element.querySelector('.guide-tooltip-main');
+	      const width = this.width || params.width || parseInt(main.style.width);
+	      const height = this.height || params.height || parseInt(main.style.height);
+	      console.log(width, height);
+	      main.style.width = `${width}px`;
+	      main.style.height = `${height}px`;
+	    }
 	  }
 
 	}
@@ -439,7 +460,8 @@
 	      this._switchStepsNumber(name); // 开始流程
 
 
-	      this.setStepsNumber(name, 0); // this.overlayer.style.display = 'block'
+	      this.setStepsNumber(name, 0);
+	      this.overlayer.style.display = 'block';
 	    } else {
 	      this._removeGuideStepBox(name);
 
@@ -465,6 +487,11 @@
 
 	      this._setTipPosition(name); // 更新定位
 
+
+	      step.setSize(element, {
+	        width: this.width,
+	        height: this.height
+	      });
 	    });
 	  }
 	  /**
@@ -483,6 +510,7 @@
 	    const elTarget = currentStep.elTarget;
 
 	    if (elTarget) {
+	      element.classList.remove('guide-step-notarget');
 	      const {
 	        width,
 	        height,

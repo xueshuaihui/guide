@@ -46,10 +46,32 @@ export default class Step {
 	 */
 	loadTip() {
 		const el = document.querySelector(this.el)
-		if(el){
-			const {width, height, top, left} = el.getClientRects()[0]
-			this.elTarget = {width, height, top, left}
+		if (el && el.getClientRects().length) {
+			const { width, height, top, left } = el.getClientRects()[0]
+			this.elTarget = { width, height, top, left }
 		}
 		this.container.innerHTML = temp(this.content) // 加载引导tip
+	}
+	/**
+	 * 设置tip宽高
+	 * @param {hTMLDivElement} element dom 对象
+	 * @param {json} params 全局step宽高
+	 */
+	setSize(element, params) {
+		if (
+			Array.prototype.includes.call(
+				element.classList,
+				'guide-step-target'
+			)
+		) {
+			const main = element.querySelector('.guide-tooltip-main')
+			const width =
+				this.width || params.width || parseInt(main.style.width)
+			const height =
+				this.height || params.height || parseInt(main.style.height)
+			console.log(width, height)
+			main.style.width = `${width}px`
+			main.style.height = `${height}px`
+		}
 	}
 }

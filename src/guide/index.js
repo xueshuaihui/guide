@@ -70,7 +70,7 @@ export default class Guide {
 			this._switchStepsNumber(name)
 			// 开始流程
 			this.setStepsNumber(name, 0)
-			// this.overlayer.style.display = 'block'
+			this.overlayer.style.display = 'block'
 		} else {
 			this._removeGuideStepBox(name)
 			delete this.activeSteps[name]
@@ -87,6 +87,10 @@ export default class Guide {
 			step.setContainer(element)
 			this.activeSteps[name].currentStep = step
 			this._setTipPosition(name) // 更新定位
+			step.setSize(element, {
+				width: this.width,
+				height: this.height,
+			})
 		})
 	}
 	/**
@@ -99,6 +103,7 @@ export default class Guide {
 		element.style.display = 'block'
 		const elTarget = currentStep.elTarget
 		if (elTarget) {
+			element.classList.remove('guide-step-notarget')
 			const { width, height, top, left } = elTarget
 			element.style.width = `${width}px`
 			element.style.height = `${height}px`
