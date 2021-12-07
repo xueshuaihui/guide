@@ -14,9 +14,7 @@ export default {
 	offsetY: '0',
 	position: 'bottom', // top bottom left right
 	tipClass: '',
-	jointsClass: '',
-	jointsWidth: '',
-	jointsHeight: '',
+	jointsClass: 'joints-triangle',
 	jointsX: '',
 	jointsY: '',
 }

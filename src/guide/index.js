@@ -90,7 +90,8 @@ export default class Guide {
 			step.setSize(element, {
 				width: this.width,
 				height: this.height,
-			})
+			}) // 设置大小
+			step.setJoints(element) // 设置joints信息
 		})
 	}
 	/**

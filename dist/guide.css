@@ -25,12 +25,13 @@
     cursor: pointer;
     top: 100%; }
     .guide-step-target .guide-tooltip .guide-joints {
-      border-style: solid;
-      border-width: 0 10px 20px 10px;
-      border-color: transparent transparent #ffffff transparent;
-      width: 0px;
-      height: 0px;
       margin: auto; }
+      .guide-step-target .guide-tooltip .guide-joints.joints-triangle {
+        border-style: solid;
+        border-width: 0 10px 20px 10px;
+        border-color: transparent transparent #ffffff transparent;
+        width: 0px;
+        height: 0px; }
     .guide-step-target .guide-tooltip .guide-tooltip-main {
       width: 100%;
       background: #ffffff;

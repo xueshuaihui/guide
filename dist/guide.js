@@ -208,9 +208,7 @@
 	  position: 'bottom',
 	  // top bottom left right
 	  tipClass: '',
-	  jointsClass: '',
-	  jointsWidth: '',
-	  jointsHeight: '',
+	  jointsClass: 'joints-triangle',
 	  jointsX: '',
 	  jointsY: ''
 	};
@@ -307,8 +305,10 @@
 
 
 	  setOption(key, value) {
-	    if (!key || !value) return;
+	    // if (!key || !value) return
+	    if (!key) return;
 	    this[key] = value;
+	    return this;
 	  }
 	  /**
 	   * 批量设置option
@@ -321,6 +321,7 @@
 	    Object.keys(options).forEach(key => {
 	      this.setOption(key, options[key]);
 	    });
+	    return this;
 	  }
 	  /**
 	   * 设置step容器
@@ -361,7 +362,7 @@
 	  }
 	  /**
 	   * 设置tip宽高
-	   * @param {hTMLDivElement} element dom 对象
+	   * @param {hTMLDivElement} element tip dom 对象
 	   * @param {json} params 全局step宽高
 	   */
 
@@ -374,6 +375,22 @@
 	      console.log(width, height);
 	      main.style.width = `${width}px`;
 	      main.style.height = `${height}px`;
+	    }
+	  }
+	  /**
+	   * 设置joints相关数据
+	   * @param {hTMLDivElement} element tip dom 对象
+	   *
+	   */
+
+
+	  setJoints(element) {
+	    if (Array.prototype.includes.call(element.classList, 'guide-step-target')) {
+	      const joints = element.querySelector('.guide-joints');
+	      joints.className = 'guide-joints';
+	      joints.classList.add(this.jointsClass);
+	      this.jointsWidth && (joints.style.width = `${this.jointsWidth}px`);
+	      this.jointsHeight && (joints.style.height = `${this.jointsHeight}px`);
 	    }
 	  }
 
@@ -491,7 +508,9 @@
 	      step.setSize(element, {
 	        width: this.width,
 	        height: this.height
-	      });
+	      }); // 设置大小
+
+	      step.setJoints(element); // 设置joints信息
 	    });
 	  }
 	  /**

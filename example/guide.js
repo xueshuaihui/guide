@@ -32,6 +32,9 @@ const guide = new Guide({
 				},
 				width: 410,
 				height: 198,
+				jointsClass: 'wcrvtyrb',
+				jointsWidth: 15,
+				jointsHeight: 15,
 			},
 			{
 				el: '#morris-area-chart',
