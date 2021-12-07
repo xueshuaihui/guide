@@ -18,7 +18,6 @@
   .guide-step-target.guide-overlayer-bgcolor {
     box-shadow: rgba(33, 33, 33, 0.8) 0px 0px 1px 2px, rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px; }
   .guide-step-target .guide-tooltip {
-    width: 200px;
     height: auto;
     position: absolute;
     z-index: 9993;

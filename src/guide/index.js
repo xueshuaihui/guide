@@ -3,7 +3,7 @@ import options from '../options/global'
 import { Listen, Trigger, Remove } from '../tools/listener'
 import { createOverlayer, createGuideStepBox } from '../core/createElement'
 import Step from '../step/index'
-import { TypeOf } from '../tools/tools'
+import { TypeOf, setStyle, ScrollToControl } from '../tools/tools'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -70,7 +70,9 @@ export default class Guide {
 			this._switchStepsNumber(name)
 			// 开始流程
 			this.setStepsNumber(name, 0)
-			this.overlayer.style.display = 'block'
+			setStyle(this.overlayer, {
+				display: 'block',
+			})
 		} else {
 			this._removeGuideStepBox(name)
 			delete this.activeSteps[name]
@@ -101,18 +103,32 @@ export default class Guide {
 	_setTipPosition(name) {
 		const steps = this.activeSteps[name]
 		const { currentStep, element } = steps
-		element.style.display = 'block'
-		const elTarget = currentStep.elTarget
+		setStyle(element, {
+			display: 'block',
+		})
+		let elTarget = currentStep.elTarget
 		if (elTarget) {
 			element.classList.remove('guide-step-notarget')
-			const { width, height, top, left } = elTarget
-			element.style.width = `${width}px`
-			element.style.height = `${height}px`
-			element.style.top = `${top}px`
-			element.style.left = `${left}px`
+			ScrollToControl(currentStep.el)
+			currentStep.setElTarget()
+			elTarget = currentStep.elTarget
 		} else {
 			element.classList.add('guide-step-notarget')
+			elTarget = {
+				width: 0,
+				height: 0,
+				top: `50%`,
+				left: `50%`,
+			}
 		}
+
+		const { width, height, top, left } = elTarget
+		setStyle(element, {
+			width,
+			height,
+			top,
+			left,
+		})
 	}
 	/**
 	 * 设置流程步骤

@@ -37,6 +37,9 @@ const guide = new Guide({
 				jointsHeight: 15,
 			},
 			{
+				el: '.inbox-inner',
+			},
+			{
 				el: '#morris-area-chart',
 				content: 'test',
 			},

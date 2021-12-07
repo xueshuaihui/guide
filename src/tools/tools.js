@@ -69,3 +69,27 @@ export const createElement = (tagname, attrs) => {
 
 	return element
 }
+/**
+ * scroll移动到指定元素
+ * @param {string} el 元素选择器
+ */
+export const ScrollToControl = (el) => {
+	const target = document.querySelector(el)
+	const { width, height, top, left } = target.getClientRects()[0]
+	// outerWidth, outerHeight
+	if (top < 0) {
+		moveScroll(0, top - height)
+	} else if (top > outerHeight - height) {
+		console.log(top, outerHeight, height)
+		moveScroll(0, top - height)
+	}
+}
+/**
+ * 移动scroll
+ * @param {number} toX left方向移动到哪
+ * @param {number} toY top方向移动到哪
+ */
+export const moveScroll = (toX, toY) => {
+	console.log(toX, toY)
+	window.scrollBy(toX, toY)
+}

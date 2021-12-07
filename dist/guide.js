@@ -137,6 +137,37 @@
 
 	  return element;
 	};
+	/**
+	 * scroll移动到指定元素
+	 * @param {string} el 元素选择器
+	 */
+
+	const ScrollToControl = el => {
+	  const target = document.querySelector(el);
+	  const {
+	    width,
+	    height,
+	    top,
+	    left
+	  } = target.getClientRects()[0]; // outerWidth, outerHeight
+
+	  if (top < 0) {
+	    moveScroll(0, top - height);
+	  } else if (top > outerHeight - height) {
+	    console.log(top, outerHeight, height);
+	    moveScroll(0, top - height);
+	  }
+	};
+	/**
+	 * 移动scroll
+	 * @param {number} toX left方向移动到哪
+	 * @param {number} toY top方向移动到哪
+	 */
+
+	const moveScroll = (toX, toY) => {
+	  console.log(toX, toY);
+	  window.scrollBy(toX, toY);
+	};
 
 	/**
 	 * 创建遮罩层
@@ -333,6 +364,7 @@
 	    if (TypeOf(container) === 'hTMLDivElement') {
 	      this.container = container.querySelector('.guide-container');
 	      this.loadTip();
+	      return this;
 	    }
 	  }
 	  /**
@@ -341,6 +373,15 @@
 
 
 	  loadTip() {
+	    this.setElTarget();
+	    this.container.innerHTML = anonymous(this.content); // 加载引导tip
+	  }
+	  /**
+	   * 更新elTarget
+	   */
+
+
+	  setElTarget() {
 	    const el = document.querySelector(this.el);
 
 	    if (el && el.getClientRects().length) {
@@ -356,9 +397,16 @@
 	        top,
 	        left
 	      };
+	      new MutationObserver((mutationsList, observer) => {
+	        console.log(mutationsList);
+	        console.log(observer);
+	      }).observe(el, {
+	        attributes: true,
+	        childList: true,
+	        subtree: true,
+	        attributeOldValue: true
+	      });
 	    }
-
-	    this.container.innerHTML = anonymous(this.content); // 加载引导tip
 	  }
 	  /**
 	   * 设置tip宽高
@@ -372,9 +420,10 @@
 	      const main = element.querySelector('.guide-tooltip-main');
 	      const width = this.width || params.width || parseInt(main.style.width);
 	      const height = this.height || params.height || parseInt(main.style.height);
-	      console.log(width, height);
-	      main.style.width = `${width}px`;
-	      main.style.height = `${height}px`;
+	      setStyle(main, {
+	        width,
+	        height
+	      });
 	    }
 	  }
 	  /**
@@ -389,8 +438,12 @@
 	      const joints = element.querySelector('.guide-joints');
 	      joints.className = 'guide-joints';
 	      joints.classList.add(this.jointsClass);
-	      this.jointsWidth && (joints.style.width = `${this.jointsWidth}px`);
-	      this.jointsHeight && (joints.style.height = `${this.jointsHeight}px`);
+	      this.jointsWidth && setStyle(joints, {
+	        width: this.jointsWidth
+	      });
+	      this.jointsHeight && setStyle(joints, {
+	        height: this.jointsHeight
+	      });
 	    }
 	  }
 
@@ -478,7 +531,9 @@
 
 
 	      this.setStepsNumber(name, 0);
-	      this.overlayer.style.display = 'block';
+	      setStyle(this.overlayer, {
+	        display: 'block'
+	      });
 	    } else {
 	      this._removeGuideStepBox(name);
 
@@ -525,24 +580,38 @@
 	      currentStep,
 	      element
 	    } = steps;
-	    element.style.display = 'block';
-	    const elTarget = currentStep.elTarget;
+	    setStyle(element, {
+	      display: 'block'
+	    });
+	    let elTarget = currentStep.elTarget;
 
 	    if (elTarget) {
 	      element.classList.remove('guide-step-notarget');
-	      const {
-	        width,
-	        height,
-	        top,
-	        left
-	      } = elTarget;
-	      element.style.width = `${width}px`;
-	      element.style.height = `${height}px`;
-	      element.style.top = `${top}px`;
-	      element.style.left = `${left}px`;
+	      ScrollToControl(currentStep.el);
+	      currentStep.setElTarget();
+	      elTarget = currentStep.elTarget;
 	    } else {
 	      element.classList.add('guide-step-notarget');
+	      elTarget = {
+	        width: 0,
+	        height: 0,
+	        top: `50%`,
+	        left: `50%`
+	      };
 	    }
+
+	    const {
+	      width,
+	      height,
+	      top,
+	      left
+	    } = elTarget;
+	    setStyle(element, {
+	      width,
+	      height,
+	      top,
+	      left
+	    });
 	  }
 	  /**
 	   * 设置流程步骤

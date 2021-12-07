@@ -1,5 +1,5 @@
 import options from '../options/step'
-import { TypeOf } from '../tools/tools'
+import { TypeOf, setStyle } from '../tools/tools'
 import temp from '../template/template1/tooltip.ejs'
 /**
  * Step类，代表一个步骤.
@@ -42,18 +42,35 @@ export default class Step {
 		if (TypeOf(container) === 'hTMLDivElement') {
 			this.container = container.querySelector('.guide-container')
 			this.loadTip()
+			return this
 		}
 	}
 	/**
 	 * 加载tip
 	 */
 	loadTip() {
+		this.setElTarget()
+		this.container.innerHTML = temp(this.content) // 加载引导tip
+	}
+	/**
+	 * 更新elTarget
+	 */
+	setElTarget() {
 		const el = document.querySelector(this.el)
 		if (el && el.getClientRects().length) {
 			const { width, height, top, left } = el.getClientRects()[0]
 			this.elTarget = { width, height, top, left }
+
+			new MutationObserver((mutationsList, observer) => {
+				console.log(mutationsList)
+				console.log(observer)
+			}).observe(el, {
+				attributes: true,
+				childList: true,
+				subtree: true,
+				attributeOldValue: true,
+			})
 		}
-		this.container.innerHTML = temp(this.content) // 加载引导tip
 	}
 	/**
 	 * 设置tip宽高
@@ -72,9 +89,10 @@ export default class Step {
 				this.width || params.width || parseInt(main.style.width)
 			const height =
 				this.height || params.height || parseInt(main.style.height)
-			console.log(width, height)
-			main.style.width = `${width}px`
-			main.style.height = `${height}px`
+			setStyle(main, {
+				width,
+				height,
+			})
 		}
 	}
 	/**
@@ -92,9 +110,8 @@ export default class Step {
 			const joints = element.querySelector('.guide-joints')
 			joints.className = 'guide-joints'
 			joints.classList.add(this.jointsClass)
-			this.jointsWidth && (joints.style.width = `${this.jointsWidth}px`)
-			this.jointsHeight &&
-				(joints.style.height = `${this.jointsHeight}px`)
+			this.jointsWidth && setStyle(joints, { width: this.jointsWidth })
+			this.jointsHeight && setStyle(joints, { height: this.jointsHeight })
 		}
 	}
 }
