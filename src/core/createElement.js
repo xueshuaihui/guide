@@ -33,7 +33,7 @@ export const createGuideStepBox = function (style, name) {
 const createGuideTipBox = function (name) {
 	const activeSteps = this.activeSteps[name]
 	return `
-	<div class="guide-tooltip guide-tooltip-${name}" style="">
+	<div class="guide-tooltip" style="">
 	    <div class="guide-joints">
 	    </div>
 	    <div class="guide-tooltip-main" style="width:${this.width}px;height:${this.height}px;">

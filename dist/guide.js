@@ -80,7 +80,7 @@
 	    return a.toLowerCase();
 	  });
 	};
-	const unitAttr = ['width', 'height', 'left', 'right', 'top', 'bottom']; // 设置样式时， 需要将数字转换为 number+px 的属性
+	const unitAttr = ['width', 'height', 'left', 'right', 'top', 'bottom', 'margin', 'margin-top', 'margin-left', 'margin-bottom', 'margin-right']; // 设置样式时， 需要将数字转换为 number+px 的属性
 
 	/**
 	 * 设置行内样式
@@ -154,7 +154,6 @@
 	  if (top < 0) {
 	    moveScroll(0, top - height);
 	  } else if (top > outerHeight - height) {
-	    console.log(top, outerHeight, height);
 	    moveScroll(0, top - height);
 	  }
 	};
@@ -165,7 +164,6 @@
 	 */
 
 	const moveScroll = (toX, toY) => {
-	  console.log(toX, toY);
 	  window.scrollBy(toX, toY);
 	};
 
@@ -205,7 +203,7 @@
 	const createGuideTipBox = function (name) {
 	  this.activeSteps[name];
 	  return `
-	<div class="guide-tooltip guide-tooltip-${name}" style="">
+	<div class="guide-tooltip" style="">
 	    <div class="guide-joints">
 	    </div>
 	    <div class="guide-tooltip-main" style="width:${this.width}px;height:${this.height}px;">
@@ -397,15 +395,6 @@
 	        top,
 	        left
 	      };
-	      new MutationObserver((mutationsList, observer) => {
-	        console.log(mutationsList);
-	        console.log(observer);
-	      }).observe(el, {
-	        attributes: true,
-	        childList: true,
-	        subtree: true,
-	        attributeOldValue: true
-	      });
 	    }
 	  }
 	  /**
@@ -444,6 +433,53 @@
 	      this.jointsHeight && setStyle(joints, {
 	        height: this.jointsHeight
 	      });
+	      setStyle(joints, {
+	        'margin-top': this.jointsY || 'auto',
+	        'margin-left': this.jointsX || 'auto'
+	      });
+	      console.log({
+	        'margin-top': this.jointsY,
+	        'margin-left': this.jointsX
+	      });
+	    }
+	  }
+	  /**
+	   * 设置位置
+	   * @param {hTMLDivElement} element tip dom 对象
+	   */
+
+
+	  setPosition(element) {
+	    const position = this.position;
+
+	    if (Array.prototype.includes.call(element.classList, 'guide-step-target')) {
+	      const tooltip = element.querySelector('.guide-tooltip');
+	      tooltip.className = 'guide-tooltip';
+	      tooltip.classList.add(`guide-tooltip-${position}`);
+
+	      if (position === 'bottom') {
+	        setStyle(tooltip, {
+	          'margin-top': this.offsetY || 'auto',
+	          'margin-left': this.offsetX || 'auto'
+	        });
+	      } else if (position === 'top') {
+	        setStyle(tooltip, {
+	          'margin-bottom': -this.offsetY || 'auto',
+	          'margin-left': this.offsetX || 'auto',
+	          'margin-top': 'auto'
+	        });
+	      } else if (position === 'left') {
+	        setStyle(tooltip, {
+	          'margin-top': this.offsetY || 'auto',
+	          'margin-left': this.offsetX || 'auto'
+	        });
+	      } else if (position === 'right') {
+	        setStyle(tooltip, {
+	          'margin-top': this.offsetY || 'auto',
+	          'margin-right': -this.offsetX || 'auto',
+	          'margin-left': 'auto'
+	        });
+	      }
 	    }
 	  }
 
@@ -560,6 +596,8 @@
 	      this._setTipPosition(name); // 更新定位
 
 
+	      step.setPosition(element); // 设置position信息
+
 	      step.setSize(element, {
 	        width: this.width,
 	        height: this.height
@@ -652,6 +690,9 @@
 	      this._removeGuideStepBox(name);
 
 	      this.setStepsState(name, false);
+	      setStyle(this.overlayer, {
+	        display: 'none'
+	      });
 	    } else {
 	      console.error('缺少steps name.');
 	    }

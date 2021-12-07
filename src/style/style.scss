@@ -25,7 +25,36 @@
 		position: absolute;
 		z-index: 9993;
 		cursor: pointer;
-		top: 100%;
+
+		&.guide-tooltip-top {
+			bottom: 100%;
+			display: flex;
+			flex-direction: column;
+			.guide-joints {
+				order: 1;
+				transform: rotate(180deg);
+			}
+		}
+		&.guide-tooltip-bottom {
+			top: 100%;
+		}
+		&.guide-tooltip-left {
+			left: 0;
+			transform: translateX(-100%);
+			display: flex;
+			.guide-joints {
+				order: 1;
+				transform: rotate(90deg);
+			}
+		}
+		&.guide-tooltip-right {
+			right: 0;
+			transform: translateX(100%);
+			display: flex;
+			.guide-joints {
+				transform: rotate(-90deg);
+			}
+		}
 		.guide-joints {
 			// display: none;
 

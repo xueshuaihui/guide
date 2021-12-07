@@ -60,16 +60,6 @@ export default class Step {
 		if (el && el.getClientRects().length) {
 			const { width, height, top, left } = el.getClientRects()[0]
 			this.elTarget = { width, height, top, left }
-
-			new MutationObserver((mutationsList, observer) => {
-				console.log(mutationsList)
-				console.log(observer)
-			}).observe(el, {
-				attributes: true,
-				childList: true,
-				subtree: true,
-				attributeOldValue: true,
-			})
 		}
 	}
 	/**
@@ -112,6 +102,54 @@ export default class Step {
 			joints.classList.add(this.jointsClass)
 			this.jointsWidth && setStyle(joints, { width: this.jointsWidth })
 			this.jointsHeight && setStyle(joints, { height: this.jointsHeight })
+			setStyle(joints, {
+				'margin-top': this.jointsY || 'auto',
+				'margin-left': this.jointsX || 'auto',
+			})
+			console.log({
+				'margin-top': this.jointsY,
+				'margin-left': this.jointsX,
+			})
+		}
+	}
+	/**
+	 * 设置位置
+	 * @param {hTMLDivElement} element tip dom 对象
+	 */
+	setPosition(element) {
+		const position = this.position
+		if (
+			Array.prototype.includes.call(
+				element.classList,
+				'guide-step-target'
+			)
+		) {
+			const tooltip = element.querySelector('.guide-tooltip')
+			tooltip.className = 'guide-tooltip'
+			tooltip.classList.add(`guide-tooltip-${position}`)
+			if (position === 'bottom') {
+				setStyle(tooltip, {
+					'margin-top': this.offsetY || 'auto',
+					'margin-left': this.offsetX || 'auto',
+				})
+			} else if (position === 'top') {
+				setStyle(tooltip, {
+					'margin-bottom': -this.offsetY || 'auto',
+					'margin-left': this.offsetX || 'auto',
+					'margin-top': 'auto',
+				})
+			} else if (position === 'left') {
+				setStyle(tooltip, {
+					'margin-top': this.offsetY || 'auto',
+					'margin-left': this.offsetX || 'auto',
+				})
+			} else if (position === 'right') {
+				setStyle(tooltip, {
+					'margin-top': this.offsetY || 'auto',
+					'margin-right': -this.offsetX || 'auto',
+					'margin-left': 'auto',
+				})
+			}
 		}
 	}
 }

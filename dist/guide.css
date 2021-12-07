@@ -21,8 +21,29 @@
     height: auto;
     position: absolute;
     z-index: 9993;
-    cursor: pointer;
-    top: 100%; }
+    cursor: pointer; }
+    .guide-step-target .guide-tooltip.guide-tooltip-top {
+      bottom: 100%;
+      display: flex;
+      flex-direction: column; }
+      .guide-step-target .guide-tooltip.guide-tooltip-top .guide-joints {
+        order: 1;
+        transform: rotate(180deg); }
+    .guide-step-target .guide-tooltip.guide-tooltip-bottom {
+      top: 100%; }
+    .guide-step-target .guide-tooltip.guide-tooltip-left {
+      left: 0;
+      transform: translateX(-100%);
+      display: flex; }
+      .guide-step-target .guide-tooltip.guide-tooltip-left .guide-joints {
+        order: 1;
+        transform: rotate(90deg); }
+    .guide-step-target .guide-tooltip.guide-tooltip-right {
+      right: 0;
+      transform: translateX(100%);
+      display: flex; }
+      .guide-step-target .guide-tooltip.guide-tooltip-right .guide-joints {
+        transform: rotate(-90deg); }
     .guide-step-target .guide-tooltip .guide-joints {
       margin: auto; }
       .guide-step-target .guide-tooltip .guide-joints.joints-triangle {

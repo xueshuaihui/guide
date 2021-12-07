@@ -14,7 +14,19 @@ export const TypeOf = (data) => {
 		})
 }
 
-const unitAttr = ['width', 'height', 'left', 'right', 'top', 'bottom'] // 设置样式时， 需要将数字转换为 number+px 的属性
+const unitAttr = [
+	'width',
+	'height',
+	'left',
+	'right',
+	'top',
+	'bottom',
+	'margin',
+	'margin-top',
+	'margin-left',
+	'margin-bottom',
+	'margin-right',
+] // 设置样式时， 需要将数字转换为 number+px 的属性
 /**
  * 设置行内样式
  *
@@ -80,7 +92,6 @@ export const ScrollToControl = (el) => {
 	if (top < 0) {
 		moveScroll(0, top - height)
 	} else if (top > outerHeight - height) {
-		console.log(top, outerHeight, height)
 		moveScroll(0, top - height)
 	}
 }
@@ -90,6 +101,5 @@ export const ScrollToControl = (el) => {
  * @param {number} toY top方向移动到哪
  */
 export const moveScroll = (toX, toY) => {
-	console.log(toX, toY)
 	window.scrollBy(toX, toY)
 }

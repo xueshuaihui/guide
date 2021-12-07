@@ -89,6 +89,7 @@ export default class Guide {
 			step.setContainer(element)
 			this.activeSteps[name].currentStep = step
 			this._setTipPosition(name) // 更新定位
+			step.setPosition(element) // 设置position信息
 			step.setSize(element, {
 				width: this.width,
 				height: this.height,
@@ -161,6 +162,9 @@ export default class Guide {
 		if (name) {
 			this._removeGuideStepBox(name)
 			this.setStepsState(name, false)
+			setStyle(this.overlayer, {
+				display: 'none',
+			})
 		} else {
 			console.error('缺少steps name.')
 		}
