@@ -87,6 +87,7 @@ export const createElement = (tagname, attrs) => {
  */
 export const ScrollToControl = (el) => {
 	const target = document.querySelector(el)
+	if (!target || !target.getClientRects().length) return
 	const { width, height, top, left } = target.getClientRects()[0]
 	// outerWidth, outerHeight
 	if (top < 0) {

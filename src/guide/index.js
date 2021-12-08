@@ -1,9 +1,13 @@
 import { version } from '../../package.json'
 import options from '../options/global'
 import { Listen, Trigger, Remove } from '../tools/listener'
-import { createOverlayer, createGuideStepBox } from '../core/createElement'
+import {
+	createOverlayer,
+	createGuideTargetBox,
+	createGuideTipBox,
+} from '../core/createElement'
 import Step from '../step/index'
-import { TypeOf, setStyle, ScrollToControl } from '../tools/tools'
+import { TypeOf, setStyle } from '../tools/tools'
 /**
  * Guide类，代表一个引导流程.
  * @constructor
@@ -65,8 +69,10 @@ export default class Guide {
 				steps: steps,
 			}
 			// 激活后 创建外层dom
-			this._createGuideStepBox(name)
-			this.body.appendChild(this.activeSteps[name].element)
+			this._createGuideTargetBox(name)
+			this._createGuideTipBox(name)
+			this.body.appendChild(this.activeSteps[name].targetElement)
+			this.body.appendChild(this.activeSteps[name].tipElement)
 			this._switchStepsNumber(name)
 			// 开始流程
 			this.setStepsNumber(name, 0)
@@ -74,7 +80,7 @@ export default class Guide {
 				display: 'block',
 			})
 		} else {
-			this._removeGuideStepBox(name)
+			this.remove(name)
 			delete this.activeSteps[name]
 		}
 	}
@@ -84,52 +90,21 @@ export default class Guide {
 	_switchStepsNumber(name) {
 		Listen(name, (arg) => {
 			const name = Array.prototype.shift.call(arg)
-			const { element, stepNumber, steps } = this.activeSteps[name]
+			const { tipElement, targetElement, stepNumber, steps } =
+				this.activeSteps[name]
 			const step = new Step(steps[stepNumber])
-			step.setContainer(element)
+			this.setStep(step, this.activeSteps[name])
 			this.activeSteps[name].currentStep = step
-			this._setTipPosition(name) // 更新定位
-			step.setPosition(element) // 设置position信息
-			step.setSize(element, {
-				width: this.width,
-				height: this.height,
-			}) // 设置大小
-			step.setJoints(element) // 设置joints信息
 		})
 	}
 	/**
-	 * 更新tip 定位
-	 * @param {string} name 流程名称
+	 *设置tip的内容和位置
 	 */
-	_setTipPosition(name) {
-		const steps = this.activeSteps[name]
-		const { currentStep, element } = steps
-		setStyle(element, {
-			display: 'block',
-		})
-		let elTarget = currentStep.elTarget
-		if (elTarget) {
-			element.classList.remove('guide-step-notarget')
-			ScrollToControl(currentStep.el)
-			currentStep.setElTarget()
-			elTarget = currentStep.elTarget
-		} else {
-			element.classList.add('guide-step-notarget')
-			elTarget = {
-				width: 0,
-				height: 0,
-				top: `50%`,
-				left: `50%`,
-			}
-		}
-
-		const { width, height, top, left } = elTarget
-		setStyle(element, {
-			width,
-			height,
-			top,
-			left,
-		})
+	setStep(step, stepsDatas) {
+		const { tipElement, targetElement } = stepsDatas
+		step.setTargetPosition(targetElement)
+		step.setTipContent(tipElement)
+		step.setTipPosition(tipElement, targetElement)
 	}
 	/**
 	 * 设置流程步骤
@@ -151,17 +126,17 @@ export default class Guide {
 		if (steps.stepNumber >= 0 && steps.stepNumber < length) {
 			Trigger(name, steps.stepNumber)
 		} else {
-			this.remove(name)
+			this.setStepsState(name, false)
 		}
 	}
 	/**
-	 * 移除流程
+	 * 移除流程dom
 	 * @param {string} name 流程名称
 	 */
 	remove(name) {
 		if (name) {
-			this._removeGuideStepBox(name)
-			this.setStepsState(name, false)
+			this._removeGuideTargetBox(name)
+			this._removeGuideTipBox(name)
 			setStyle(this.overlayer, {
 				display: 'none',
 			})
@@ -190,39 +165,63 @@ export default class Guide {
 		this.overlayer = null
 	}
 	/**
-	 * 创建steps外层dom
+	 * 创建引导step的target框
 	 * @param {string} name 流程名称
 	 */
-	_createGuideStepBox(name) {
+	_createGuideTargetBox(name) {
 		if (!name) {
 			console.error('缺少 step name')
 			return
 		}
-		const box = createGuideStepBox.call(
+		const box = createGuideTargetBox.call(
 			this,
 			{
 				display: 'none',
 			},
 			name
 		)
-		this.activeSteps[name].element = box
+		this.activeSteps[name].targetElement = box
 	}
 	/**
-	 * 移除steps外层dom
+	 * 创建引导step的tip框
 	 * @param {string} name 流程名称
 	 */
-	_removeGuideStepBox(name) {
+	_createGuideTipBox(name) {
 		if (!name) {
 			console.error('缺少 step name')
 			return
 		}
-		this.activeSteps[name]?.element?.remove()
+		const box = createGuideTipBox.call(this, name)
+		this.activeSteps[name].tipElement = box
+	}
+	/**
+	 * 移除step的target框
+	 * @param {string} name 流程名称
+	 */
+	_removeGuideTargetBox(name) {
+		if (!name) {
+			console.error('缺少 step name')
+			return
+		}
+		this.activeSteps[name]?.targetElement?.remove()
+	}
+	/**
+	 * 移除step的tip框
+	 * @param {string} name 流程名称
+	 */
+	_removeGuideTipBox(name) {
+		if (!name) {
+			console.error('缺少 step name')
+			return
+		}
+		this.activeSteps[name]?.tipElement?.remove()
 	}
 	/**
 	 * 委托button事件
 	 */
 	bindEvent() {
 		this.body = document.getElementsByTagName('body')[0]
+		// 按钮点击事件
 		this.body.onclick = (e) => {
 			const target = e.target
 			if (
@@ -232,9 +231,6 @@ export default class Guide {
 				const code = target.getAttribute('code')
 				const stepsName = target.getAttribute('steps')
 				switch (code) {
-					case 'next':
-						this.Next(stepsName)
-						break
 					case 'prev':
 						this.Prev(stepsName)
 						break
@@ -250,11 +246,28 @@ export default class Guide {
 				}
 			}
 		}
+		//
+		const updataStep = () => {
+			Object.values(this.activeSteps).forEach((item) => {
+				if (item.currentStep) {
+					const { tipElement, targetElement } = item
+					item.currentStep.setTargetPosition(targetElement)
+					item.currentStep.setTipPosition(tipElement, targetElement)
+				}
+			})
+		}
+		// 页面缩放事件
+		window.onresize = () => {
+			updataStep()
+		}
+		// scroll 监听
+		window.onscroll = () => {
+			updataStep()
+		}
 	}
 	//
 	Next(name) {
 		if (!name) return
-		const steps = this.activeSteps[name]
 		this.setStepsNumber(name, '++')
 	}
 	Prev(name) {
@@ -263,7 +276,7 @@ export default class Guide {
 	}
 	Skip(name) {
 		if (!name) return
-		this.remove(name)
+		this.setStepsState(name, false)
 	}
 	Done(name) {
 		if (!name) return

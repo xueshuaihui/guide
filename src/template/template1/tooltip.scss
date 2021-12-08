@@ -1,7 +1,6 @@
-.guide-tip-template {
+.guide-tip-template1 {
 	width: 100%;
 	height: 100%;
-	display: flex;
 	font-family: PingFang SC;
 	color: rgba(47, 46, 63, 0.85);
 	.guide-image {
@@ -9,17 +8,24 @@
 	.guide-message {
 		flex: 1;
 		h3 {
-			font-weight: 500;
-			font-size: 16px;
-			line-height: 24px;
+			align-items: center;
 			letter-spacing: 1px;
-			color: #2f2e3f;
+			font-family: PingFang SC;
+			font-style: normal;
+			font-weight: 600;
+			font-size: 20px;
+			line-height: 28px;
+			color: #2878ff;
+			margin: 0;
 		}
 		p {
-			font-size: 13px;
+			font-family: PingFang SC;
+			font-style: normal;
+			font-weight: normal;
+			font-size: 14px;
 			line-height: 22px;
-			letter-spacing: 1px;
-			color: rgba(47, 46, 63, 0.85);
+			color: rgba(47, 46, 63, 0.65);
+			margin-top: 8px;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 const guide = new Guide({
-	animation: true,
+	nextLabel: '我知道了',
 	steps: {
 		click: [
 			{
@@ -25,11 +25,18 @@ const guide = new Guide({
 		event: [
 			{
 				el: '.logo',
-				content: {
-					image: '',
-					title: '分享项目',
-					text: '分享链接给同事，邀请同事发表意见',
-				},
+				content: [
+					{
+						image: '',
+						title: '分享项目',
+						text: '按住空格键和鼠标左键拖拽可以移动画布。',
+					},
+					{
+						image: '',
+						title: '分享项目',
+						text: '按住  ⌘  键，同时滚动鼠标滚轮可以缩放画布大小。',
+					},
+				],
 				width: 410,
 				height: 198,
 				jointsWidth: 15,
@@ -37,7 +44,7 @@ const guide = new Guide({
 			},
 			{
 				el: '.inbox-inner',
-				position: 'top',
+				position: 'bottom',
 				jointsX: '30',
 				jointsY: '-2',
 				offsetX: 40,
