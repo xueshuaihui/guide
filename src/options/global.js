@@ -35,4 +35,5 @@ export default {
 	height: 200,
 	mount: null,
 	unmount: null,
+	jointsClass: 'joints-triangle',
 }

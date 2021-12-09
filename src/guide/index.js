@@ -53,7 +53,7 @@ export default class Guide {
 		if (!this.steps || this.steps?.length === 0) return
 		this._createOverlayer()
 		this.setStepsState(code, true)
-		return this
+		return this.activeSteps[code]
 	}
 	/**
 	 * 设置流程状态
@@ -109,8 +109,8 @@ export default class Guide {
 	_switchStepsNumber(name) {
 		Listen(name, (arg) => {
 			const name = Array.prototype.shift.call(arg)
-			const { tipElement, targetElement, stepNumber, steps } =
-				this.activeSteps[name]
+			if (!this.activeSteps[name]) return
+			const { stepNumber, steps } = this.activeSteps[name]
 			const step = new Step(steps[stepNumber])
 			this.setStep(step, this.activeSteps[name])
 
@@ -140,6 +140,7 @@ export default class Guide {
 		step.setTargetPosition(targetElement)
 		step.setTipContent(tipElement)
 		step.setTipPosition(tipElement, targetElement)
+		step.positionOffset(tipElement)
 	}
 	/**
 	 * 设置流程步骤

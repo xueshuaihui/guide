@@ -80,7 +80,7 @@ export default class Step {
 	 */
 	setTipPosition(tipElement, targetElement) {
 		if (targetElement && tipElement) {
-			if (!this.el) {
+			if (!this.el || !document.querySelector(this.el)) {
 				this.position = 'center'
 			}
 			const { width, height, top, left } =
@@ -118,7 +118,7 @@ export default class Step {
 		console.log(width, height)
 		setStyle(tipElement, {
 			top: window.screen.height / 2 - height / 2,
-			left: window.screen.width / 2 - width / 2,
+			left: document.body.clientWidth / 2 - width / 2,
 		})
 	}
 	_positionBottom(
@@ -158,6 +158,20 @@ export default class Step {
 			top: targetTop,
 			left: targetLeft + targetWidth,
 		})
+	}
+	/**
+	 * tip、joints偏移量
+	 * @param {hTMLDivElement} tipElement dom 对象
+	 * */
+	positionOffset(tipElement) {
+		if (!tipElement || TypeOf(tipElement) !== 'hTMLDivElement') return
+		tipElement.style.transform = `translate(${this.offsetX || 0}px, ${
+			this.offsetY || 0
+		}px)`
+		const joints = tipElement.querySelector('.guide-joints')
+		joints.style.transform = `translate(${this.jointsX || 0}px, ${
+			this.jointsY || 0
+		}px)`
 	}
 
 	// 	/**

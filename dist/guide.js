@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Thu, 09 Dec 2021 02:41:21 GMT
+ * Date: Thu, 09 Dec 2021 07:25:22 GMT
  */
 
 (function (global, factory) {
@@ -48,7 +48,8 @@
 	  width: 200,
 	  height: 200,
 	  mount: null,
-	  unmount: null
+	  unmount: null,
+	  jointsClass: 'joints-triangle'
 	};
 
 	let list = {};
@@ -215,12 +216,14 @@
 	function encode_char(c) {
 	  return _ENCODE_HTML_RULES[c] || c;
 	}var __line = 1
-	  , __lines = "<div class=\"guide-joints joints-triangle\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button <%= locals.nextclass %>\" code=\"next\" steps=\"<%= locals.name %>\">\n            <%= locals.nextLabel %>\n        </div>\n\n        <% if(locals.prevEnable){ %>\n            <div class=\"guide-button guide-prev-button <%= locals.prevclass %>\" code=\"prev\" steps=\"<%= locals.name %>\">\n                <%= locals.prevLabel %>\n            </div>\n            <% } %>\n\n                <% if(locals.skipEnable){ %>\n                    <div class=\"guide-button guide-skip-button <%= locals.skipclass %>\" code=\"skip\"\n                        steps=\"<%= locals.name %>\">\n                        <%= locals.skipLabel %>\n                    </div>\n                    <% } %>\n                        <% if(locals.doneEnable){ %>\n                            <div class=\"guide-button guide-done-button <%= locals.doneclass %>\" code=\"done\"\n                                steps=\"<%= locals.name %>\">\n                                <%= locals.doneLabel %>\n                            </div>\n                            <%}%>\n\n    </div>\n</div>"
+	  , __lines = "<div class=\"guide-joints <%= locals.jointsClass %>\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button <%= locals.nextclass %>\" code=\"next\" steps=\"<%= locals.name %>\">\n            <%= locals.nextLabel %>\n        </div>\n\n        <% if(locals.prevEnable){ %>\n            <div class=\"guide-button guide-prev-button <%= locals.prevclass %>\" code=\"prev\" steps=\"<%= locals.name %>\">\n                <%= locals.prevLabel %>\n            </div>\n            <% } %>\n\n                <% if(locals.skipEnable){ %>\n                    <div class=\"guide-button guide-skip-button <%= locals.skipclass %>\" code=\"skip\"\n                        steps=\"<%= locals.name %>\">\n                        <%= locals.skipLabel %>\n                    </div>\n                    <% } %>\n                        <% if(locals.doneEnable){ %>\n                            <div class=\"guide-button guide-done-button <%= locals.doneclass %>\" code=\"done\"\n                                steps=\"<%= locals.name %>\">\n                                <%= locals.doneLabel %>\n                            </div>\n                            <%}%>\n\n    </div>\n</div>"
 	  , __filename = undefined;
 	try {
 	  var __output = "";
 	  function __append(s) { if (s !== undefined && s !== null) __output += s; }
-	    ; __append("<div class=\"guide-joints joints-triangle\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button ")
+	    ; __append("<div class=\"guide-joints ")
+	    ; __append(escapeFn( locals.jointsClass ))
+	    ; __append("\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button ")
 	    ; __line = 6
 	    ; __append(escapeFn( locals.nextclass ))
 	    ; __append("\" code=\"next\" steps=\"")
@@ -336,7 +339,6 @@
 	  position: 'bottom',
 	  // top bottom left right
 	  tipClass: '',
-	  jointsClass: 'joints-triangle',
 	  jointsX: '',
 	  jointsY: '',
 	  mount: null,
@@ -521,7 +523,7 @@
 
 	  setTipPosition(tipElement, targetElement) {
 	    if (targetElement && tipElement) {
-	      if (!this.el) {
+	      if (!this.el || !document.querySelector(this.el)) {
 	        this.position = 'center';
 	      }
 
@@ -578,7 +580,7 @@
 	    console.log(width, height);
 	    setStyle(tipElement, {
 	      top: window.screen.height / 2 - height / 2,
-	      left: window.screen.width / 2 - width / 2
+	      left: document.body.clientWidth / 2 - width / 2
 	    });
 	  }
 
@@ -634,6 +636,18 @@
 	      top: targetTop,
 	      left: targetLeft + targetWidth
 	    });
+	  }
+	  /**
+	   * tip、joints偏移量
+	   * @param {hTMLDivElement} tipElement dom 对象
+	   * */
+
+
+	  positionOffset(tipElement) {
+	    if (!tipElement || TypeOf(tipElement) !== 'hTMLDivElement') return;
+	    tipElement.style.transform = `translate(${this.offsetX || 0}px, ${this.offsetY || 0}px)`;
+	    const joints = tipElement.querySelector('.guide-joints');
+	    joints.style.transform = `translate(${this.jointsX || 0}px, ${this.jointsY || 0}px)`;
 	  } // 	/**
 	  // 	 * 设置step容器
 	  // 	 * @param {hTMLDivElement} container dom 对象
@@ -811,7 +825,7 @@
 	    this._createOverlayer();
 
 	    this.setStepsState(code, true);
-	    return this;
+	    return this.activeSteps[code];
 	  }
 	  /**
 	   * 设置流程状态
@@ -871,9 +885,8 @@
 	  _switchStepsNumber(name) {
 	    Listen(name, arg => {
 	      const name = Array.prototype.shift.call(arg);
+	      if (!this.activeSteps[name]) return;
 	      const {
-	        tipElement,
-	        targetElement,
 	        stepNumber,
 	        steps
 	      } = this.activeSteps[name];
@@ -906,6 +919,7 @@
 	    step.setTargetPosition(targetElement);
 	    step.setTipContent(tipElement);
 	    step.setTipPosition(tipElement, targetElement);
+	    step.positionOffset(tipElement);
 	  }
 	  /**
 	   * 设置流程步骤

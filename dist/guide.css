@@ -22,9 +22,28 @@
   pointer-events: none;
   border: 1px solid #2878ff;
   border-radius: 16px;
-  pointer-events: none; }
+  pointer-events: none;
+  outline: 8px solid rgba(40, 120, 255, 0.2);
+  -webkit-animation: twinkle 1s infinite alternate;
+          animation: twinkle 1s infinite alternate; }
   .guide-step-target.guide-overlayer-bgcolor {
-    box-shadow: rgba(40, 120, 255, 0.2) 0px 0px 0px 8px, rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px; }
+    box-shadow: rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px; }
+
+@-webkit-keyframes twinkle {
+  0% {
+    outline: 8px solid rgba(40, 120, 255, 0); }
+  50% {
+    outline: 8px solid rgba(40, 120, 255, 0.2); }
+  100% {
+    outline: 8px solid rgba(40, 120, 255, 0); } }
+
+@keyframes twinkle {
+  0% {
+    outline: 8px solid rgba(40, 120, 255, 0); }
+  50% {
+    outline: 8px solid rgba(40, 120, 255, 0.2); }
+  100% {
+    outline: 8px solid rgba(40, 120, 255, 0); } }
 
 .guide-tooltip {
   height: auto;
@@ -38,17 +57,34 @@
     display: flex;
     flex-direction: column; }
     .guide-tooltip.guide-tooltip-top .guide-joints {
-      order: 1;
+      order: 1; }
+    .guide-tooltip.guide-tooltip-top .joints-triangle {
       transform: rotate(180deg); }
+    .guide-tooltip.guide-tooltip-top .joints-line {
+      width: 2px;
+      height: 40px; }
+  .guide-tooltip.guide-tooltip-bottom {
+    display: flex;
+    flex-direction: column; }
+    .guide-tooltip.guide-tooltip-bottom .joints-line {
+      width: 2px;
+      height: 40px; }
   .guide-tooltip.guide-tooltip-left {
     display: flex; }
     .guide-tooltip.guide-tooltip-left .guide-joints {
-      order: 1;
+      order: 1; }
+    .guide-tooltip.guide-tooltip-left .joints-triangle {
       transform: rotate(90deg); }
+    .guide-tooltip.guide-tooltip-left .joints-line {
+      width: 40px;
+      height: 2px; }
   .guide-tooltip.guide-tooltip-right {
     display: flex; }
-    .guide-tooltip.guide-tooltip-right .guide-joints {
+    .guide-tooltip.guide-tooltip-right .joints-triangle {
       transform: rotate(-90deg); }
+    .guide-tooltip.guide-tooltip-right .joints-line {
+      width: 40px;
+      height: 2px; }
   .guide-tooltip .guide-joints {
     margin: auto; }
     .guide-tooltip .guide-joints.joints-triangle {
@@ -57,6 +93,8 @@
       border-color: transparent transparent #ffffff transparent;
       width: 0px;
       height: 0px; }
+    .guide-tooltip .guide-joints.joints-line {
+      background: #2878ff; }
   .guide-tooltip .guide-tooltip-main {
     width: 100%;
     background: #ffffff;

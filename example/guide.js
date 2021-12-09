@@ -1,6 +1,7 @@
 const guide = new Guide({
 	nextLabel: '我知道了',
 	nextclass: 'next',
+	jointsClass: 'joints-line',
 	mount(name, steps) {
 		// console.log(`开启流程名称${name}, 数据`, steps)
 	},
@@ -8,23 +9,41 @@ const guide = new Guide({
 		// console.log(`结束流程名称${name}, 数据`, steps)
 	},
 	steps: {
+		create: [
+			{
+				el: '.create.create-btn',
+				content: [
+					{
+						image: '',
+						title: '新建项目',
+						text: '分享链接给同事，邀请同事发表意见',
+					},
+				],
+				width: 410,
+				height: 198,
+			},
+		],
 		click: [
 			{
-				content: {
-					image: '',
-					title: '分享项目',
-					text: '分享链接给同事，邀请同事发表意见',
-				},
+				content: [
+					{
+						image: '',
+						title: '分享项目',
+						text: '分享链接给同事，邀请同事发表意见',
+					},
+				],
 				width: 410,
 				height: 198,
 			},
 			{
 				el: '.logo',
-				content: {
-					image: '',
-					title: '分享项目',
-					text: '分享链接给同事，邀请同事发表意见',
-				},
+				content: [
+					{
+						image: '',
+						title: '分享项目',
+						text: '分享链接给同事，邀请同事发表意见',
+					},
+				],
 				width: 410,
 				height: 198,
 			},
@@ -57,6 +76,13 @@ const guide = new Guide({
 			},
 			{
 				el: '.inbox-inner',
+				content: [
+					{
+						image: '',
+						title: '分享项目',
+						text: '按住  ⌘  键，同时滚动鼠标滚轮可以缩放画布大小。',
+					},
+				],
 				position: 'bottom',
 				jointsX: '30',
 				jointsY: '-2',
