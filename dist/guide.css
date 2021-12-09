@@ -67,6 +67,7 @@
     padding: 24px; }
     .guide-tooltip .guide-tooltip-main .guide-button-box {
       display: flex;
+      justify-content: flex-end;
       overflow: hidden; }
       .guide-tooltip .guide-tooltip-main .guide-button-box .guide-button {
         padding: 6px 16px;

@@ -1,10 +1,11 @@
 const guide = new Guide({
 	nextLabel: '我知道了',
+	nextclass: 'next',
 	mount(name, steps) {
-		console.log(`开启流程名称${name}, 数据`, steps)
+		// console.log(`开启流程名称${name}, 数据`, steps)
 	},
 	unmount(name, steps) {
-		console.log(`结束流程名称${name}, 数据`, steps)
+		// console.log(`结束流程名称${name}, 数据`, steps)
 	},
 	steps: {
 		click: [
@@ -48,10 +49,10 @@ const guide = new Guide({
 				jointsWidth: 15,
 				jointsHeight: 15,
 				mount(name, step) {
-					console.log(`开启流程名称${name}, 数据`, step)
+					// console.log(`开启流程名称${name}, 数据`, step)
 				},
 				unmount(name, step) {
-					console.log(`结束流程名称${name}, 数据`, step)
+					// console.log(`结束流程名称${name}, 数据`, step)
 				},
 			},
 			{
@@ -62,10 +63,10 @@ const guide = new Guide({
 				offsetX: 40,
 				offsetY: -30,
 				mount(name, step) {
-					console.log(`开启流程名称${name}, 数据`, step)
+					// console.log(`开启流程名称${name}, 数据`, step)
 				},
 				unmount(name, step) {
-					console.log(`结束流程名称${name}, 数据`, step)
+					// console.log(`结束流程名称${name}, 数据`, step)
 				},
 			},
 			{
@@ -81,10 +82,10 @@ const guide = new Guide({
 				offsetX: 40,
 				offsetY: 30,
 				mount(name, step) {
-					console.log(`开启流程名称${name}, 数据`, step)
+					// console.log(`开启流程名称${name}, 数据`, step)
 				},
 				unmount(name, step) {
-					console.log(`结束流程名称${name}, 数据`, step)
+					// console.log(`结束流程名称${name}, 数据`, step)
 				},
 			},
 		],

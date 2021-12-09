@@ -19,12 +19,15 @@
 	  // 上一步按钮参数
 	  prevLabel: '上一步',
 	  prevclass: '',
+	  prevEnable: true,
 	  // 跳过按钮参数
 	  skipLabel: '跳过',
 	  skipclass: '',
+	  skipEnable: false,
 	  // 结束按钮参数
 	  doneLabel: '完成',
 	  doneclass: '',
+	  doneEnable: true,
 	  // 提示框弹出位置
 	  confirmtipPosition: 'bottom',
 	  // 提示框弹出自定义class
@@ -212,7 +215,7 @@
 	function encode_char(c) {
 	  return _ENCODE_HTML_RULES[c] || c;
 	}var __line = 1
-	  , __lines = "<div class=\"guide-joints joints-triangle\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button <%= locals.nextclass %>\" code=\"next\" steps=\"<%= locals.name %>\">\n            <%= locals.nextLabel %>\n        </div>\n        <div class=\"guide-button guide-prev-button <%= locals.prevclass %>\" code=\"prev\" steps=\"<%= locals.name %>\">\n            <%= locals.prevLabel %>\n        </div>\n        <div class=\"guide-button guide-skip-button <%= locals.skipclass %>\" code=\"skip\" steps=\"<%= locals.name %>\">\n            <%= locals.skipLabel %>\n        </div>\n        <div class=\"guide-button guide-done-button <%= locals.doneclass %>\" code=\"done\" steps=\"<%= locals.name %>\">\n            <%= locals.doneLabel %>\n        </div>\n    </div>\n</div>"
+	  , __lines = "<div class=\"guide-joints joints-triangle\">\n</div>\n<div class=\"guide-tooltip-main\">\n    <div class=\"guide-container\"></div>\n    <div class=\"guide-button-box\">\n        <div class=\"guide-button guide-next-button <%= locals.nextclass %>\" code=\"next\" steps=\"<%= locals.name %>\">\n            <%= locals.nextLabel %>\n        </div>\n\n        <% if(locals.prevEnable){ %>\n            <div class=\"guide-button guide-prev-button <%= locals.prevclass %>\" code=\"prev\" steps=\"<%= locals.name %>\">\n                <%= locals.prevLabel %>\n            </div>\n            <% } %>\n\n                <% if(locals.skipEnable){ %>\n                    <div class=\"guide-button guide-skip-button <%= locals.skipclass %>\" code=\"skip\"\n                        steps=\"<%= locals.name %>\">\n                        <%= locals.skipLabel %>\n                    </div>\n                    <% } %>\n                        <% if(locals.doneEnable){ %>\n                            <div class=\"guide-button guide-done-button <%= locals.doneclass %>\" code=\"done\"\n                                steps=\"<%= locals.name %>\">\n                                <%= locals.doneLabel %>\n                            </div>\n                            <%}%>\n\n    </div>\n</div>"
 	  , __filename = undefined;
 	try {
 	  var __output = "";
@@ -225,32 +228,52 @@
 	    ; __append("\">\n            ")
 	    ; __line = 7
 	    ; __append(escapeFn( locals.nextLabel ))
-	    ; __append("\n        </div>\n        <div class=\"guide-button guide-prev-button ")
-	    ; __line = 9
+	    ; __append("\n        </div>\n\n        ")
+	    ; __line = 10
+	    ;  if(locals.prevEnable){ 
+	    ; __append("\n            <div class=\"guide-button guide-prev-button ")
+	    ; __line = 11
 	    ; __append(escapeFn( locals.prevclass ))
 	    ; __append("\" code=\"prev\" steps=\"")
 	    ; __append(escapeFn( locals.name ))
-	    ; __append("\">\n            ")
-	    ; __line = 10
-	    ; __append(escapeFn( locals.prevLabel ))
-	    ; __append("\n        </div>\n        <div class=\"guide-button guide-skip-button ")
+	    ; __append("\">\n                ")
 	    ; __line = 12
-	    ; __append(escapeFn( locals.skipclass ))
-	    ; __append("\" code=\"skip\" steps=\"")
-	    ; __append(escapeFn( locals.name ))
-	    ; __append("\">\n            ")
-	    ; __line = 13
-	    ; __append(escapeFn( locals.skipLabel ))
-	    ; __append("\n        </div>\n        <div class=\"guide-button guide-done-button ")
-	    ; __line = 15
-	    ; __append(escapeFn( locals.doneclass ))
-	    ; __append("\" code=\"done\" steps=\"")
-	    ; __append(escapeFn( locals.name ))
-	    ; __append("\">\n            ")
+	    ; __append(escapeFn( locals.prevLabel ))
+	    ; __append("\n            </div>\n            ")
+	    ; __line = 14
+	    ;  } 
+	    ; __append("\n\n                ")
 	    ; __line = 16
+	    ;  if(locals.skipEnable){ 
+	    ; __append("\n                    <div class=\"guide-button guide-skip-button ")
+	    ; __line = 17
+	    ; __append(escapeFn( locals.skipclass ))
+	    ; __append("\" code=\"skip\"\n                        steps=\"")
+	    ; __line = 18
+	    ; __append(escapeFn( locals.name ))
+	    ; __append("\">\n                        ")
+	    ; __line = 19
+	    ; __append(escapeFn( locals.skipLabel ))
+	    ; __append("\n                    </div>\n                    ")
+	    ; __line = 21
+	    ;  } 
+	    ; __append("\n                        ")
+	    ; __line = 22
+	    ;  if(locals.doneEnable){ 
+	    ; __append("\n                            <div class=\"guide-button guide-done-button ")
+	    ; __line = 23
+	    ; __append(escapeFn( locals.doneclass ))
+	    ; __append("\" code=\"done\"\n                                steps=\"")
+	    ; __line = 24
+	    ; __append(escapeFn( locals.name ))
+	    ; __append("\">\n                                ")
+	    ; __line = 25
 	    ; __append(escapeFn( locals.doneLabel ))
-	    ; __append("\n        </div>\n    </div>\n</div>")
-	    ; __line = 19;
+	    ; __append("\n                            </div>\n                            ")
+	    ; __line = 27
+	    ; }
+	    ; __append("\n\n    </div>\n</div>")
+	    ; __line = 30;
 	  return __output;
 	} catch (e) {
 	  rethrow(e, __lines, __filename, __line, escapeFn);
@@ -304,14 +327,6 @@
 	};
 
 	var options = {
-	  // nextLabel: '下一步',
-	  // nextclass: '',
-	  // prevLabel: '上一步',
-	  // prevclass: '',
-	  // skipLabel: '跳过',
-	  // skipclass: '',
-	  // doneLabel: '完成',
-	  // doneclass: '',
 	  content: '',
 	  // 内容数据
 	  width: '',
@@ -874,6 +889,8 @@
 	      if (TypeOf(step.mount) === 'function') {
 	        step.mount(name, step);
 	      }
+
+	      this.buttonState(this.activeSteps[name]); // 更新按钮状态
 	    });
 	  }
 	  /**
@@ -1082,7 +1099,7 @@
 	    window.onscroll = () => {
 	      updataStep();
 	    };
-	  } //
+	  } // 按钮事件处理方法
 
 
 	  Next(name) {
@@ -1103,6 +1120,47 @@
 	  Done(name) {
 	    if (!name) return;
 	    this.setStepsNumber(name, '++');
+	  }
+	  /**
+	   *按钮状态处理
+	   */
+
+
+	  buttonState(stepsDatas) {
+	    const activeSteps = this.activeSteps;
+	    Object.values(activeSteps).forEach(item => {
+	      const {
+	        tipElement
+	      } = item;
+	      const next = tipElement.querySelector('.guide-button.guide-next-button');
+	      const prev = tipElement.querySelector('.guide-button.guide-prev-button');
+	      const done = tipElement.querySelector('.guide-button.guide-done-button');
+	      const {
+	        stepNumber,
+	        steps
+	      } = stepsDatas;
+	      const length = steps.length;
+
+	      if (stepNumber > 0) {
+	        prev?.classList.remove('hide');
+	        prev?.classList.add('show');
+	      } else {
+	        prev?.classList.remove('show');
+	        prev?.classList.add('hide');
+	      }
+
+	      if (done && stepNumber === length - 1) {
+	        next?.classList.remove('show');
+	        next?.classList.add('hide');
+	        done?.classList.remove('hide');
+	        done?.classList.add('show');
+	      } else {
+	        done?.classList.remove('show');
+	        done?.classList.add('hide');
+	        next?.classList.remove('hide');
+	        next?.classList.add('show');
+	      }
+	    });
 	  }
 
 	}

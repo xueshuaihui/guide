@@ -129,6 +129,7 @@ export default class Guide {
 			if (TypeOf(step.mount) === 'function') {
 				step.mount(name, step)
 			}
+			this.buttonState(this.activeSteps[name]) // 更新按钮状态
 		})
 	}
 	/**
@@ -299,7 +300,7 @@ export default class Guide {
 			updataStep()
 		}
 	}
-	//
+	// 按钮事件处理方法
 	Next(name) {
 		if (!name) return
 		this.setStepsNumber(name, '++')
@@ -315,5 +316,43 @@ export default class Guide {
 	Done(name) {
 		if (!name) return
 		this.setStepsNumber(name, '++')
+	}
+	/**
+	 *按钮状态处理
+	 */
+	buttonState(stepsDatas) {
+		const activeSteps = this.activeSteps
+		Object.values(activeSteps).forEach((item) => {
+			const { tipElement } = item
+			const next = tipElement.querySelector(
+				'.guide-button.guide-next-button'
+			)
+			const prev = tipElement.querySelector(
+				'.guide-button.guide-prev-button'
+			)
+			const done = tipElement.querySelector(
+				'.guide-button.guide-done-button'
+			)
+			const { stepNumber, steps } = stepsDatas
+			const length = steps.length
+			if (stepNumber > 0) {
+				prev?.classList.remove('hide')
+				prev?.classList.add('show')
+			} else {
+				prev?.classList.remove('show')
+				prev?.classList.add('hide')
+			}
+			if (done && stepNumber === length - 1) {
+				next?.classList.remove('show')
+				next?.classList.add('hide')
+				done?.classList.remove('hide')
+				done?.classList.add('show')
+			} else {
+				done?.classList.remove('show')
+				done?.classList.add('hide')
+				next?.classList.remove('hide')
+				next?.classList.add('show')
+			}
+		})
 	}
 }

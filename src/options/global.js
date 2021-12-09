@@ -5,12 +5,15 @@ export default {
 	// 上一步按钮参数
 	prevLabel: '上一步',
 	prevclass: '',
+	prevEnable: true,
 	// 跳过按钮参数
 	skipLabel: '跳过',
 	skipclass: '',
+	skipEnable: false,
 	// 结束按钮参数
 	doneLabel: '完成',
 	doneclass: '',
+	doneEnable: true,
 	// 提示框弹出位置
 	confirmtipPosition: 'bottom',
 	// 提示框弹出自定义class

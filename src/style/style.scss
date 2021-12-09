@@ -83,6 +83,7 @@
 		}
 		.guide-button-box {
 			display: flex;
+			justify-content: flex-end;
 			overflow: hidden;
 			.guide-button {
 				padding: 6px 16px;
