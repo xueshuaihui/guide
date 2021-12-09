@@ -17,4 +17,6 @@ export default {
 	jointsClass: 'joints-triangle',
 	jointsX: '',
 	jointsY: '',
+	mount: null,
+	unmount: null,
 }

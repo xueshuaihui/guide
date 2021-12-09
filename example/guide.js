@@ -1,5 +1,11 @@
 const guide = new Guide({
 	nextLabel: '我知道了',
+	mount(name, steps) {
+		console.log(`开启流程名称${name}, 数据`, steps)
+	},
+	unmount(name, steps) {
+		console.log(`结束流程名称${name}, 数据`, steps)
+	},
 	steps: {
 		click: [
 			{
@@ -41,6 +47,12 @@ const guide = new Guide({
 				height: 198,
 				jointsWidth: 15,
 				jointsHeight: 15,
+				mount(name, step) {
+					console.log(`开启流程名称${name}, 数据`, step)
+				},
+				unmount(name, step) {
+					console.log(`结束流程名称${name}, 数据`, step)
+				},
 			},
 			{
 				el: '.inbox-inner',
@@ -49,6 +61,12 @@ const guide = new Guide({
 				jointsY: '-2',
 				offsetX: 40,
 				offsetY: -30,
+				mount(name, step) {
+					console.log(`开启流程名称${name}, 数据`, step)
+				},
+				unmount(name, step) {
+					console.log(`结束流程名称${name}, 数据`, step)
+				},
 			},
 			{
 				el: '#morris-area-chart',
@@ -62,6 +80,12 @@ const guide = new Guide({
 				position: 'right',
 				offsetX: 40,
 				offsetY: 30,
+				mount(name, step) {
+					console.log(`开启流程名称${name}, 数据`, step)
+				},
+				unmount(name, step) {
+					console.log(`结束流程名称${name}, 数据`, step)
+				},
 			},
 		],
 	},

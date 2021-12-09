@@ -30,4 +30,6 @@ export default {
 	// 宽高
 	width: 200,
 	height: 200,
+	mount: null,
+	unmount: null,
 }

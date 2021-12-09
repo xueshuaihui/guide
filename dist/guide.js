@@ -43,7 +43,9 @@
 	  // exitOnEsc: false,
 	  // 宽高
 	  width: 200,
-	  height: 200
+	  height: 200,
+	  mount: null,
+	  unmount: null
 	};
 
 	let list = {};
@@ -321,7 +323,9 @@
 	  tipClass: '',
 	  jointsClass: 'joints-triangle',
 	  jointsX: '',
-	  jointsY: ''
+	  jointsY: '',
+	  mount: null,
+	  unmount: null
 	};
 
 	function anonymous(locals, escapeFn, include, rethrow
@@ -824,8 +828,22 @@
 	      this.setStepsNumber(name, 0);
 	      setStyle(this.overlayer, {
 	        display: 'block'
-	      });
+	      }); // 触发回调
+
+	      if (TypeOf(this.mount) === 'function') {
+	        this.mount(name, this.activeSteps[name]);
+	      }
 	    } else {
+	      // last step 注销回调
+	      if (TypeOf(this.activeSteps[name].currentStep?.unmount) === 'function') {
+	        this.activeSteps[name].currentStep.unmount(name, this.activeSteps[name].currentStep);
+	      } //  steps注销回调
+
+
+	      if (TypeOf(this.unmount) === 'function') {
+	        this.unmount(name, this.activeSteps[name]);
+	      }
+
 	      this.remove(name);
 	      delete this.activeSteps[name];
 	    }
@@ -845,8 +863,17 @@
 	        steps
 	      } = this.activeSteps[name];
 	      const step = new Step(steps[stepNumber]);
-	      this.setStep(step, this.activeSteps[name]);
-	      this.activeSteps[name].currentStep = step;
+	      this.setStep(step, this.activeSteps[name]); // 原step 注销回调
+
+	      if (TypeOf(this.activeSteps[name].currentStep?.unmount) === 'function') {
+	        this.activeSteps[name].currentStep.unmount(name, this.activeSteps[name].currentStep);
+	      }
+
+	      this.activeSteps[name].currentStep = step; // currentStep 创建回调
+
+	      if (TypeOf(step.mount) === 'function') {
+	        step.mount(name, step);
+	      }
 	    });
 	  }
 	  /**

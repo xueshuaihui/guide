@@ -68,6 +68,7 @@ export default class Guide {
 				stepNumber: -1,
 				steps: steps,
 			}
+
 			// 激活后 创建外层dom
 			this._createGuideTargetBox(name)
 			this._createGuideTipBox(name)
@@ -79,7 +80,25 @@ export default class Guide {
 			setStyle(this.overlayer, {
 				display: 'block',
 			})
+			// 触发回调
+			if (TypeOf(this.mount) === 'function') {
+				this.mount(name, this.activeSteps[name])
+			}
 		} else {
+			// last step 注销回调
+			if (
+				TypeOf(this.activeSteps[name].currentStep?.unmount) ===
+				'function'
+			) {
+				this.activeSteps[name].currentStep.unmount(
+					name,
+					this.activeSteps[name].currentStep
+				)
+			}
+			//  steps注销回调
+			if (TypeOf(this.unmount) === 'function') {
+				this.unmount(name, this.activeSteps[name])
+			}
 			this.remove(name)
 			delete this.activeSteps[name]
 		}
@@ -94,7 +113,22 @@ export default class Guide {
 				this.activeSteps[name]
 			const step = new Step(steps[stepNumber])
 			this.setStep(step, this.activeSteps[name])
+
+			// 原step 注销回调
+			if (
+				TypeOf(this.activeSteps[name].currentStep?.unmount) ===
+				'function'
+			) {
+				this.activeSteps[name].currentStep.unmount(
+					name,
+					this.activeSteps[name].currentStep
+				)
+			}
 			this.activeSteps[name].currentStep = step
+			// currentStep 创建回调
+			if (TypeOf(step.mount) === 'function') {
+				step.mount(name, step)
+			}
 		})
 	}
 	/**
