@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Wed, 08 Dec 2021 03:34:37 GMT
+ * Date: Thu, 09 Dec 2021 02:41:21 GMT
  */
 
 (function (global, factory) {
@@ -466,8 +466,10 @@
 	  setTargetPosition(targetElement) {
 	    const el = document.querySelector(this.el);
 	    ScrollToControl(this.el);
+	    document.querySelector('.guide-target')?.classList.remove('guide-target');
 
 	    if (el && el.getClientRects().length) {
+	      el.classList.add('guide-target');
 	      const {
 	        width,
 	        height,

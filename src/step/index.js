@@ -50,7 +50,11 @@ export default class Step {
 	setTargetPosition(targetElement) {
 		const el = document.querySelector(this.el)
 		ScrollToControl(this.el)
+		document
+			.querySelector('.guide-target')
+			?.classList.remove('guide-target')
 		if (el && el.getClientRects().length) {
+			el.classList.add('guide-target')
 			const { width, height, top, left } = el.getClientRects()[0]
 			setStyle(targetElement, {
 				width,

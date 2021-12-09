@@ -6,6 +6,10 @@
   left: 0;
   z-index: 99990; }
 
+.guide-target {
+  z-index: 99991;
+  position: relative; }
+
 .guide-step-target {
   width: 0px;
   height: 0px;
@@ -17,7 +21,8 @@
   left: 0;
   pointer-events: none;
   border: 1px solid #2878ff;
-  border-radius: 16px; }
+  border-radius: 16px;
+  pointer-events: none; }
   .guide-step-target.guide-overlayer-bgcolor {
     box-shadow: rgba(40, 120, 255, 0.2) 0px 0px 0px 8px, rgba(33, 33, 33, 0.5) 0px 0px 0px 5000px; }
 
