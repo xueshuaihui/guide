@@ -51,6 +51,7 @@ const guide = new Guide({
 		event: [
 			{
 				el: '.logo',
+				position: 'right',
 				content: [
 					{
 						image: '',
@@ -63,10 +64,6 @@ const guide = new Guide({
 						text: '按住  ⌘  键，同时滚动鼠标滚轮可以缩放画布大小。',
 					},
 				],
-				width: 410,
-				height: 198,
-				jointsWidth: 15,
-				jointsHeight: 15,
 				mount(name, step) {
 					// console.log(`开启流程名称${name}, 数据`, step)
 				},
@@ -83,11 +80,7 @@ const guide = new Guide({
 						text: '按住  ⌘  键，同时滚动鼠标滚轮可以缩放画布大小。',
 					},
 				],
-				position: 'bottom',
-				jointsX: '30',
-				jointsY: '-2',
-				offsetX: 40,
-				offsetY: -30,
+				position: 'left',
 				mount(name, step) {
 					// console.log(`开启流程名称${name}, 数据`, step)
 				},
@@ -99,14 +92,10 @@ const guide = new Guide({
 				el: '#morris-area-chart',
 				content: 'test',
 				position: 'left',
-				offsetX: -40,
-				offsetY: 30,
 			},
 			{
 				el: '.menu-list.nav-active',
 				position: 'right',
-				offsetX: 40,
-				offsetY: 30,
 				mount(name, step) {
 					// console.log(`开启流程名称${name}, 数据`, step)
 				},

@@ -1,7 +1,7 @@
 /*!
  * guide v1.0.0
  * author: xuesh
- * Date: Thu, 09 Dec 2021 07:25:22 GMT
+ * Date: Fri, 10 Dec 2021 09:57:34 GMT
  */
 
 (function (global, factory) {
@@ -342,7 +342,8 @@
 	  jointsX: '',
 	  jointsY: '',
 	  mount: null,
-	  unmount: null
+	  unmount: null,
+	  template: 'template1'
 	};
 
 	function anonymous(locals, escapeFn, include, rethrow
@@ -590,9 +591,12 @@
 	    targetTop,
 	    targetLeft
 	  }) {
+	    const {
+	      width
+	    } = tipElement.getClientRects()[0];
 	    setStyle(tipElement, {
 	      top: targetTop + targetHeight,
-	      left: targetLeft
+	      left: targetLeft + (targetWidth - width) / 2
 	    });
 	  }
 
@@ -603,11 +607,12 @@
 	    targetLeft
 	  }) {
 	    const {
+	      width,
 	      height
 	    } = tipElement.getClientRects()[0];
 	    setStyle(tipElement, {
 	      top: targetTop - height,
-	      left: targetLeft
+	      left: targetLeft + (targetWidth - width) / 2
 	    });
 	  }
 
@@ -618,10 +623,11 @@
 	    targetLeft
 	  }) {
 	    const {
-	      width
+	      width,
+	      height
 	    } = tipElement.getClientRects()[0];
 	    setStyle(tipElement, {
-	      top: targetTop,
+	      top: targetTop - (height - targetHeight) / 2,
 	      left: targetLeft - width
 	    });
 	  }
@@ -632,8 +638,11 @@
 	    targetTop,
 	    targetLeft
 	  }) {
+	    const {
+	      height
+	    } = tipElement.getClientRects()[0];
 	    setStyle(tipElement, {
-	      top: targetTop,
+	      top: targetTop - (height - targetHeight) / 2,
 	      left: targetLeft + targetWidth
 	    });
 	  }

@@ -10,4 +10,5 @@ export default {
 	jointsY: '',
 	mount: null,
 	unmount: null,
+	template: 'template1',
 }

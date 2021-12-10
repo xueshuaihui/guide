@@ -125,28 +125,29 @@ export default class Step {
 		tipElement,
 		{ targetWidth, targetHeight, targetTop, targetLeft }
 	) {
+		const { width } = tipElement.getClientRects()[0]
 		setStyle(tipElement, {
 			top: targetTop + targetHeight,
-			left: targetLeft,
+			left: targetLeft + (targetWidth - width) / 2,
 		})
 	}
 	_positionTop(
 		tipElement,
 		{ targetWidth, targetHeight, targetTop, targetLeft }
 	) {
-		const { height } = tipElement.getClientRects()[0]
+		const { width, height } = tipElement.getClientRects()[0]
 		setStyle(tipElement, {
 			top: targetTop - height,
-			left: targetLeft,
+			left: targetLeft + (targetWidth - width) / 2,
 		})
 	}
 	_positionLeft(
 		tipElement,
 		{ targetWidth, targetHeight, targetTop, targetLeft }
 	) {
-		const { width } = tipElement.getClientRects()[0]
+		const { width, height } = tipElement.getClientRects()[0]
 		setStyle(tipElement, {
-			top: targetTop,
+			top: targetTop - (height - targetHeight) / 2,
 			left: targetLeft - width,
 		})
 	}
@@ -154,8 +155,9 @@ export default class Step {
 		tipElement,
 		{ targetWidth, targetHeight, targetTop, targetLeft }
 	) {
+		const { height } = tipElement.getClientRects()[0]
 		setStyle(tipElement, {
-			top: targetTop,
+			top: targetTop - (height - targetHeight) / 2,
 			left: targetLeft + targetWidth,
 		})
 	}
