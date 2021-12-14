@@ -26,6 +26,7 @@ const banner = `/*!
 `
 
 const jsPlugins = [
+	commonjs(),
 	json(),
 	resolve(),
 	progress(),
@@ -35,7 +36,6 @@ const jsPlugins = [
 	babel({
 		exclude: 'node_modules/**',
 	}),
-	commonjs(),
 	ejs({
 		include: ['**/*.ejs', '**/*.html'], // optional, '**/*.ejs' by default
 		exclude: ['**/index.html'], // optional, undefined by default

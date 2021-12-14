@@ -1,6 +1,9 @@
 import options from '../options/step'
 import { TypeOf, setStyle, ScrollToControl } from '../tools/tools'
+import ejs from 'ejs'
 import temp from '../template/template1/tooltip.ejs'
+
+console.log(111111, ejs)
 /**
  * Step类，代表一个步骤.
  * @constructor
