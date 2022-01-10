@@ -19,7 +19,7 @@ export default {
 	// 提示框弹出自定义class
 	confirmtipClass: '',
 	// 是否打开遮罩层
-	// openoverlayer: 'true',
+	openoverlayer: false,
 	// 遮罩层透明度
 	overlayOpacity: '.7',
 	// 提示框弹出位置是否自动, 设置true时会对confirmtipPosition 覆盖

@@ -77,8 +77,9 @@ export default class Guide {
 			this._switchStepsNumber(name)
 			// 开始流程
 			this.setStepsNumber(name, 0)
+			const overlayer = this.openoverlayer?'block': 'none'
 			setStyle(this.overlayer, {
-				display: 'block',
+				display: overlayer,
 			})
 			// 触发回调
 			if (TypeOf(this.mount) === 'function') {
@@ -139,8 +140,11 @@ export default class Guide {
 		const { tipElement, targetElement } = stepsDatas
 		step.setTargetPosition(targetElement)
 		step.setTipContent(tipElement)
-		step.setTipPosition(tipElement, targetElement)
-		step.positionOffset(tipElement)
+		setTimeout(() => {
+			// 保证页面渲染结束再进行位置计算
+			step.setTipPosition(tipElement, targetElement)
+			step.positionOffset(tipElement)
+		}, 0)
 	}
 	/**
 	 * 设置流程步骤

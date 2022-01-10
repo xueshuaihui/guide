@@ -18,6 +18,22 @@
                         </div>
             </div>
             <% }) %>
-                <% }%>
+                <% }else{ %>
+                    <div>
+                        <% if (locals.image) { %>
+                            <div class="guide-image">
+                                <img src="<%= item.image %>" alt="" />
+                            </div>
+                            <% } %>
+                                <div class="guide-message">
+                                    <h3>
+                                        <%= locals.title %>
+                                    </h3>
+                                    <p>
+                                        <%= locals.text %>
+                                    </p>
+                                </div>
+                    </div>
+                    <% } %>
 
 </div>

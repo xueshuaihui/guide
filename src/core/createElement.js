@@ -22,7 +22,7 @@ export const createGuideTargetBox = function (style, name) {
 	let attr = {
 		style: style,
 	}
-	attr.class = 'guide-step-target guide-overlayer-bgcolor'
+	attr.class = `guide-step-target ${this.openoverlayer?'guide-overlayer-bgcolor':''}`
 	const stepTarget = createElement('div', attr)
 	// stepTarget.innerHTML = createGuideTipBox.call(this, name)
 	return stepTarget
