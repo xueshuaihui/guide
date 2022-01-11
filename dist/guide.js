@@ -1,7 +1,7 @@
 /*!
- * guide v1.0.0beta0.0.1
+ * guide v1.0.0beta0.0.2
  * author: xuesh
- * Date: Mon, 10 Jan 2022 16:54:22 GMT
+ * Date: Tue, 11 Jan 2022 02:32:16 GMT
  */
 
 (function (global, factory) {
@@ -10,7 +10,7 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Guide = factory());
 })(this, (function () { 'use strict';
 
-	var version = "1.0.0beta0.0.1";
+	var version = "1.0.0beta0.0.2";
 
 	var options$1 = {
 	  // 下一步按钮参数
